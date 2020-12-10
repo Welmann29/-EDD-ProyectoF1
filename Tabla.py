@@ -13,11 +13,11 @@ class Tabla(object):
         self.nombre = nombre
         self.columnas = columnas
         self.vector = []
-        self.tamano = 15
+        self.tamano = 13
         self.elementos = 0
         self.factorCarga = 0
         self.tipoPrimaria = None
-        for i in range(15):
+        for i in range(13):
             self.vector.append(None)
 
     '''
@@ -29,7 +29,6 @@ class Tabla(object):
         result = 0
         for char in cadena:
             result += ord(char)
-        print(cadena, result)
         return result
 
     '''
@@ -77,8 +76,8 @@ class Tabla(object):
 
             self.factorCarga = self.elementos / self.tamano
 
-            if self.factorCarga > 0.9:
-                self.rehashing()
+            '''if self.factorCarga > 0.9:
+                self.rehashing()'''
 
             return True
         else:
@@ -135,6 +134,12 @@ class Tabla(object):
                 return True
         return False
 
+    def BuscandoNodoToAscii(self, lista, dato):
+        for i in lista:
+            if i.primaria == dato:
+                return i
+        return False
+
     '''
     Ordenamiento de la lista, el metodo a utilizar sera el ordenamiento de burbuja
     '''
@@ -156,6 +161,44 @@ class Tabla(object):
                     vector[j + 1] = vector[j]
                     vector[j] = aux
         return vector
+
+    def BusquedaBinariaDevlviendoNodo(self, lista, dato):
+        if len(lista) == 0:
+            return False
+        else:
+            medio = len(lista) // 2
+            if lista[medio].primaria == dato:
+                return lista[medio]
+            else:
+                if dato < lista[medio].primaria:
+                    return self.BusquedaBinariaDevlviendoNodo(lista[:medio], dato)
+                else:
+                    return self.BusquedaBinariaDevlviendoNodo(lista[medio + 1:], dato)
+
+    '''
+    Retorna el nodo para mostrar la informacion
+    Representa la funcion ExtractRow()
+    '''
+    def ExtraerTupla(self, primaria):
+        if self.tipoPrimaria == 'int':
+            if type(primaria) is str:
+                return False
+            indice = self.funcionHash(primaria)
+            casilla = self.vector[indice]
+            nodo = self.BusquedaBinariaDevlviendoNodo(casilla, primaria)
+        else:
+            if type(primaria) is int:
+                return False
+            indice = self.funcionHash(primaria)
+            casilla = self.vector[indice]
+            nodo = self.BuscandoNodoToAscii(casilla, primaria)
+
+        if type(nodo) == bool:
+            return False
+        else:
+            return nodo.datos
+
+
 
 
 lista = []
@@ -197,6 +240,7 @@ print(tabla.Existe(lista, 14))
 for i in lista:
     print(i.primaria)
 
+tabla.insertar([65, 'Primer65'])
 tabla.insertar([1, 'Welmann', 'Paniagua'])
 tabla.insertar([2, 'Welmann1'])
 tabla.insertar([3, 'Welmann2'])
@@ -229,7 +273,29 @@ tabla.insertar([57, 'Welmann81'])
 tabla.insertar([58, 'Welmann91'])
 tabla.insertar([120, 'Welmann91'])
 tabla.insertar([65, 'Welmann91'])
+tabla.insertar([16, 'Welmann71 no se debe insertar'])
+tabla.insertar([1, 'Welmann'])
 
 tabla.imprimir()
 print('')
 tabla2.imprimir()
+print()
+print()
+
+pruebaBusqueda = [65, 17, 8, 4, 121, 2000, 896]
+BusquedaASCII = ['aa', 'aba', 'arr', 'hola', 'puto', 50, 1]
+
+
+print('BUSQUEDA EN TABLA ENTEROS')
+for i in pruebaBusqueda:
+    print('Resultado de buscar la llave:', i)
+    print(tabla.ExtraerTupla(i))
+
+print()
+print('BUSQUEDA EN TABLA STRING')
+for i in BusquedaASCII:
+    print('Resultado de buscar la llave:', i)
+    print(tabla2.ExtraerTupla(i))
+
+
+
