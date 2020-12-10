@@ -36,3 +36,8 @@ pensar en una forma de llevar los datos a discos para no tener grandes cargas de
 
 ## Eficencia de la busqueda de strings
 No logre hacer una busqueda muy eficiente para las llaves strings, algo que va a servir durante todo el proyecto, lo ideal es encontrar una forma mas rapida y con menos iteraciones 
+
+### Tareas menores
+- Función para cambiar path de la carpeta data, esto podría servir en caso la consola no se encuentre en el directorio destino (Fercho)
+- Actualizar las funciones de TytusStorage con la definición expandida (tipos de parámetros, valores de retorno) (Fercho)
+- Que Wellman nos vuelva colaboradores (Wellman)
