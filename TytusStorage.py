@@ -1,17 +1,24 @@
 import ListaBaseDatos as Storage
+import os
 
 storage=Storage.ListaBaseDatos()
+main_path= os.getcwd()+"\\tmp"
 
 #==//== funciones con respecto a ListaBaseDatos ==//==
 # Se llama la función sobre la clase ListaBaseDatos
 
-def createDatabase(databaseName):
+def createDatabase(mode: int, databaseName: str):
 
     if databaseName:
-        storage.createDatabase(databaseName)
+
+        if mode in range(1, 6):
+            storage.createDatabase(5, databaseName)
+
+        else:
+            return 3
 
     else:
-        print("Se necesita un nombre para la base de datos")
+        return 2
 
 
 def showDatabases():
@@ -131,7 +138,7 @@ def insert(databaseName, tableName, columns):
 
         if temp:
 
-            temp.insert(columns)
+            temp.insertar(columns)
 
         else:
             print("Tabla '"+tableName+"' no creada")
@@ -214,3 +221,26 @@ def extractRow(databaseName, tableName, id):
 
     else:
         print("Base de datos '"+databaseName+"' no encontrada")
+
+
+#==//== inicialización del sistema de directorios ==//==
+
+def init():
+    
+    db_list=[]
+
+    if os.path.isdir(main_path):
+        
+        for db in os.listdir(main_path):
+            storage.createDatabase(5, db)
+
+    else:
+        os.mkdir(main_path)
+
+    print(">> Se cargaron:")
+    showDatabases()
+
+
+init()
+
+
