@@ -273,6 +273,29 @@ class Tabla(object):
             self.vector[indice][indiceInterno] = elemento
             return True
 
+    def extractTable(self):
+        lista = []
+        for i in self.vector:
+            if i is None:
+                '''No hace nada'''
+            else:
+                for j in i:
+                    lista.append(j)
+        if len(lista) > 0:
+            if self.tipoPrimaria == 'int':
+                lista = self.OrdenarBurbuja(lista)
+            else:
+                lista = self.OrdenarBurbujaToAscii(lista)
+            ListaDeListas = []
+            for i in lista:
+                ListaDeListas.append(i.datos)
+            return ListaDeListas
+        else:
+            return []
+
+    def alterTable(self, name):
+        self.nombre = name
+
 
 lista = []
 lista.append(Nodo([10, 'Welmann']))
@@ -301,6 +324,8 @@ tabla2.insertar(['aggg', 'Dato8'])
 tabla2.insertar(['abc', 'Dato9'])
 tabla2.insertar(['arr', 'Dato11'])
 tabla2.insertar(['acc', 'Dato10'])
+
+print(tabla2.extractTable())
 
 lista = tabla.OrdenarBurbuja(lista)
 
@@ -347,6 +372,8 @@ tabla.insertar([120, 'Welmann91'])
 tabla.insertar([65, 'Welmann91'])
 tabla.insertar([16, 'Welmann71 no se debe insertar'])
 tabla.insertar([1, 'Welmann'])
+
+print(tabla.extractTable())
 
 tabla.imprimir()
 print('')
@@ -395,4 +422,5 @@ tabla.imprimir()
 tabla.deleteTable(4)
 tabla.imprimir()
 
+print(tabla.extractTable())
 print(type(45))
