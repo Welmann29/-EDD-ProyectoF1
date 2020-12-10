@@ -179,18 +179,23 @@ class Tabla(object):
     Retorna el nodo para mostrar la informacion
     Representa la funcion ExtractRow()
     '''
+
     def ExtraerTupla(self, primaria):
         if self.tipoPrimaria == 'int':
             if type(primaria) is str:
                 return False
             indice = self.funcionHash(primaria)
             casilla = self.vector[indice]
+            if casilla is None:
+                return False
             nodo = self.BusquedaBinariaDevlviendoNodo(casilla, primaria)
         else:
             if type(primaria) is int:
                 return False
             indice = self.funcionHash(primaria)
             casilla = self.vector[indice]
+            if casilla is None:
+                return False
             nodo = self.BuscandoNodoToAscii(casilla, primaria)
 
         if type(nodo) == bool:
@@ -198,7 +203,75 @@ class Tabla(object):
         else:
             return nodo.datos
 
+    '''
+    Truncate, metodo para vaciar la tabla totalmente 
+    '''
 
+    def truncate(self):
+        self.vector = []
+        for i in range(13):
+            self.vector.append(None)
+
+    '''
+    deleteTable, elimina un registro de la tabla
+    '''
+
+    def deleteTable(self, primaria):
+        if (type(primaria) is str) or (type(primaria) is int):
+            indice = self.funcionHash(primaria)
+            if len(self.vector[indice]) <= 1:
+                self.vector[indice] = None
+                return True
+            nuevo = self._delete(self.vector[indice], primaria)
+            if type(nuevo) == bool:
+                return False
+            else:
+                self.vector[indice] = nuevo
+                return True
+        else:
+            return False
+
+    def _delete(self, lista, primaria):
+        if self.tipoPrimaria == 'int':
+            elemento = self.BusquedaBinariaDevlviendoNodo(lista, primaria)
+            if type(elemento) == bool:
+                return False
+            else:
+                lista.remove(elemento)
+                return lista
+        else:
+            for i in lista:
+                if i.primaria == primaria:
+                    lista.remove(i)
+                    return lista
+            return False
+
+    def update(self, primaria, numeroColumna, nuevoValor):
+        if not (numeroColumna < self.columnas):  # Si el numero de columna es mayor a las definidas falla
+            return False
+
+        if self.tipoPrimaria == 'int':
+            if not (type(primaria) is int):
+                return False
+            indice = self.funcionHash(primaria)
+            if not self.Existe(self.vector[indice], primaria):
+                return False
+            elemento = self.BusquedaBinariaDevlviendoNodo(self.vector[indice], primaria)
+            indiceInterno = self.vector[indice].index(elemento)
+            elemento.datos[numeroColumna] = nuevoValor
+            self.vector[indice][indiceInterno] = elemento
+            return True
+        else:
+            if not (type(primaria) is str):
+                return False
+            indice = self.funcionHash(primaria)
+            if not self.ExisteToAscii(self.vector[indice], primaria):
+                return False
+            elemento = self.BuscandoNodoToAscii(self.vector[indice], primaria)
+            indiceInterno = self.vector[indice].index(elemento)
+            elemento.datos[numeroColumna] = nuevoValor
+            self.vector[indice][indiceInterno] = elemento
+            return True
 
 
 lista = []
@@ -228,7 +301,6 @@ tabla2.insertar(['aggg', 'Dato8'])
 tabla2.insertar(['abc', 'Dato9'])
 tabla2.insertar(['arr', 'Dato11'])
 tabla2.insertar(['acc', 'Dato10'])
-
 
 lista = tabla.OrdenarBurbuja(lista)
 
@@ -285,7 +357,6 @@ print()
 pruebaBusqueda = [65, 17, 8, 4, 121, 2000, 896]
 BusquedaASCII = ['aa', 'aba', 'arr', 'hola', 'puto', 50, 1]
 
-
 print('BUSQUEDA EN TABLA ENTEROS')
 for i in pruebaBusqueda:
     print('Resultado de buscar la llave:', i)
@@ -297,5 +368,31 @@ for i in BusquedaASCII:
     print('Resultado de buscar la llave:', i)
     print(tabla2.ExtraerTupla(i))
 
+print()
+print(tabla.ExtraerTupla(52))
+tabla.deleteTable(52)
+print(tabla.ExtraerTupla(52))
 
+print()
+print(tabla.ExtraerTupla(11))
+print(tabla.update(11, 1, 'NuevoValor'))
+print(tabla.ExtraerTupla(11))
 
+print()
+print(tabla2.ExtraerTupla('aa'))
+print(tabla2.update('aa', 1, 'Nuevo valor en tabla string'))
+print(tabla2.ExtraerTupla('aa'))
+
+print()
+print(tabla2.ExtraerTupla('aa'))
+tabla2.deleteTable('aa')
+print(tabla2.ExtraerTupla('aa'))
+
+tabla.truncate()
+tabla.imprimir()
+tabla.insertar([4, 'Holuuuuu'])
+tabla.imprimir()
+tabla.deleteTable(4)
+tabla.imprimir()
+
+print(type(45))
