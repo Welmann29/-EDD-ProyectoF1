@@ -3,6 +3,7 @@ import subprocess
 import time
 import random
 
+
 class Nodo(object):
     def __init__(self, datos):
         self.datos = datos
@@ -325,8 +326,9 @@ class Tabla(object):
         for i in range(self.tamano):
             if i == 0:
                 file.write('node0 [label = "<f0> 0|' + os.linesep)
-            elif i == self.tamano-1:
-                file.write('<f' + str(i) + '> ' + str(i) + '",height='+str(self.tamano/2)+', width=.8];' + os.linesep)
+            elif i == self.tamano - 1:
+                file.write(
+                    '<f' + str(i) + '> ' + str(i) + '",height=' + str(self.tamano / 2) + ', width=.8];' + os.linesep)
             else:
                 file.write('<f' + str(i) + '> ' + str(i) + '|' + os.linesep)
 
@@ -334,12 +336,14 @@ class Tabla(object):
         for listaNodos in self.vector:
             if not listaNodos is None:
                 for nodo in listaNodos:
-                    file.write('node' + str(nodo.primaria) + '[label = "{<n> ' + str(nodo.primaria) + '| <p> }"];' + os.linesep)
-                file.write('node0:f' + str(contador) + ' -> node'+str(listaNodos[0].primaria)+':n;' + os.linesep)
+                    file.write('node' + str(nodo.primaria) + '[label = "{<n> ' + str(
+                        nodo.primaria) + '| <p> }"];' + os.linesep)
+                file.write('node0:f' + str(contador) + ' -> node' + str(listaNodos[0].primaria) + ':n;' + os.linesep)
                 if len(listaNodos) > 1:
                     for i in range(len(listaNodos)):
-                        if not i == len(listaNodos)-1:
-                            file.write('node'+str(listaNodos[i].primaria)+':p -> node'+str(listaNodos[i+1].primaria)+':n;' + os.linesep)
+                        if not i == len(listaNodos) - 1:
+                            file.write('node' + str(listaNodos[i].primaria) + ':p -> node' + str(
+                                listaNodos[i + 1].primaria) + ':n;' + os.linesep)
 
             else:
                 file.write('nodeNone' + str(contador) + ' [shape=plaintext, label="None", width=0.5]' + os.linesep)
@@ -350,6 +354,30 @@ class Tabla(object):
         file.close()
         subprocess.call('dot -Tpng hash.dot -o hash.png')
         os.system('hash.png')
+
+    def alterAddColumn(self):
+        for i in self.vector:
+            if i is None:
+                '''No hace nada'''
+            else:
+                for j in i:
+                    j.datos.append(None)
+        self.columnas += 1
+        return 0
+
+    def alterDropColumn(self, numero):
+        if numero >= self.columnas:
+            return 4
+        for i in self.vector:
+            if i is None:
+                '''No hace nada'''
+            else:
+                for j in i:
+                    j.datos.pop(numero)
+        self.columnas -= 1
+        return 0
+
+
 
 lista = []
 lista.append(Nodo([10, 'Welmann']))
@@ -380,7 +408,15 @@ tabla2.insertar(['arr', 'Dato11'])
 tabla2.insertar(['acc', 'Dato10'])
 
 print(tabla2.extractTable())
-tabla2.Grafico()
+# tabla2.Grafico()
+
+tabla2.imprimir()
+tabla2.alterAddColumn()
+print()
+tabla2.imprimir()
+print(tabla2.alterDropColumn(3))
+print(tabla2.alterDropColumn(2))
+tabla2.imprimir()
 
 
 lista = tabla.OrdenarBurbuja(lista)
@@ -451,13 +487,11 @@ tabla.insertar([530, 'Welmann9'])
 tabla.insertar([53342, 'repetido'])
 tabla.insertar([3, 'Welmann2'])
 
-
-
 print(tabla.extractTable())
 
 tabla.imprimir()
 print('')
-tabla2.imprimir()
+
 print()
 print()
 
@@ -508,7 +542,7 @@ print(type(45))
 tablaAleaoria = Tabla('Aleatoria', 3)
 
 for i in range(200):
-    tablaAleaoria.insertar([random.randint(1, 10000), random.randint(1, 100000), random.randint(1,10000)])
+    tablaAleaoria.insertar([random.randint(1, 10000), random.randint(1, 100000), random.randint(1, 10000)])
 
 print(tablaAleaoria.tamano)
 #tablaAleaoria.Grafico()
