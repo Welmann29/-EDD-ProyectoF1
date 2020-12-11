@@ -1,3 +1,8 @@
+import os
+import subprocess
+import time
+import random
+
 class Nodo(object):
     def __init__(self, datos):
         self.datos = datos
@@ -17,7 +22,7 @@ class Tabla(object):
         self.elementos = 0
         self.factorCarga = 0
         self.tipoPrimaria = None
-        for i in range(13):
+        for i in range(self.tamano):
             self.vector.append(None)
 
     '''
@@ -76,21 +81,32 @@ class Tabla(object):
 
             self.factorCarga = self.elementos / self.tamano
 
-            '''if self.factorCarga > 0.9:
-                self.rehashing()'''
+            if self.factorCarga > 0.8:
+                self.rehashing()
 
             return True
         else:
             return False
 
     def rehashing(self):
-        while not (self.factorCarga < 0.6):
+        while not (self.factorCarga < 0.3):
             self.tamano += 1
             self.factorCarga = self.elementos / self.tamano
 
-        nuevosEspacios = self.tamano - len(self.vector)
-        for i in range(nuevosEspacios):
+        lista = []
+        for i in self.vector:
+            if i is None:
+                '''No hace nada'''
+            else:
+                for j in i:
+                    lista.append(j)
+
+        self.vector = []
+        for tamaño in range(self.tamano):
             self.vector.append(None)
+
+        for nodo in lista:
+            self.insertar(nodo.datos)
 
     def funcionHash(self, primaria):
         if self.tipoPrimaria == 'str':
@@ -209,7 +225,8 @@ class Tabla(object):
 
     def truncate(self):
         self.vector = []
-        for i in range(13):
+        self.tamano = 13
+        for i in range(self.tamano):
             self.vector.append(None)
 
     '''
@@ -221,6 +238,7 @@ class Tabla(object):
             indice = self.funcionHash(primaria)
             if len(self.vector[indice]) <= 1:
                 self.vector[indice] = None
+                self.elementos -= 1
                 return True
             nuevo = self._delete(self.vector[indice], primaria)
             if type(nuevo) == bool:
@@ -296,6 +314,42 @@ class Tabla(object):
     def alterTable(self, name):
         self.nombre = name
 
+    def Grafico(self):
+        file = open('hash.dot', "w")
+        file.write("digraph grafica{" + os.linesep)
+        file.write('graph [pad="0.5"];' + os.linesep)
+        file.write("nodesep=.05;" + os.linesep)
+        file.write("rankdir=LR;" + os.linesep)
+        file.write("node [shape=record,width=.1,height=.1];" + os.linesep)
+
+        for i in range(self.tamano):
+            if i == 0:
+                file.write('node0 [label = "<f0> 0|' + os.linesep)
+            elif i == self.tamano-1:
+                file.write('<f' + str(i) + '> ' + str(i) + '",height='+str(self.tamano/2)+', width=.8];' + os.linesep)
+            else:
+                file.write('<f' + str(i) + '> ' + str(i) + '|' + os.linesep)
+
+        contador = 0
+        for listaNodos in self.vector:
+            if not listaNodos is None:
+                for nodo in listaNodos:
+                    file.write('node' + str(nodo.primaria) + '[label = "{<n> ' + str(nodo.primaria) + '| <p> }"];' + os.linesep)
+                file.write('node0:f' + str(contador) + ' -> node'+str(listaNodos[0].primaria)+':n;' + os.linesep)
+                if len(listaNodos) > 1:
+                    for i in range(len(listaNodos)):
+                        if not i == len(listaNodos)-1:
+                            file.write('node'+str(listaNodos[i].primaria)+':p -> node'+str(listaNodos[i+1].primaria)+':n;' + os.linesep)
+
+            else:
+                file.write('nodeNone' + str(contador) + ' [shape=plaintext, label="None", width=0.5]' + os.linesep)
+                file.write('node0:f' + str(contador) + ' -> nodeNone' + str(contador) + os.linesep)
+            contador += 1
+
+        file.write(' }' + os.linesep)
+        file.close()
+        subprocess.call('dot -Tpng hash.dot -o hash.png')
+        os.system('hash.png')
 
 lista = []
 lista.append(Nodo([10, 'Welmann']))
@@ -326,6 +380,8 @@ tabla2.insertar(['arr', 'Dato11'])
 tabla2.insertar(['acc', 'Dato10'])
 
 print(tabla2.extractTable())
+tabla2.Grafico()
+
 
 lista = tabla.OrdenarBurbuja(lista)
 
@@ -340,7 +396,7 @@ for i in lista:
 tabla.insertar([65, 'Primer65'])
 tabla.insertar([1, 'Welmann', 'Paniagua'])
 tabla.insertar([2, 'Welmann1'])
-tabla.insertar([3, 'Welmann2'])
+tabla.insertar([3, 'unico 3'])
 tabla.insertar([4, 'Welmann3'])
 tabla.insertar([5, 'Welmann4'])
 print(tabla.insertar([6, 'Welmann5']))
@@ -362,7 +418,7 @@ tabla.insertar([55, 'Welmann91'])
 tabla.insertar([50, 'Welmann9'])
 tabla.insertar([51, 'Welmann10'])
 tabla.insertar([52, 'Welmann21'])
-tabla.insertar([53, 'Welmann41'])
+tabla.insertar([53, 'Primer53'])
 tabla.insertar([54, 'Welmann51'])
 tabla.insertar([95, 'Welmann61'])
 tabla.insertar([56, 'Welmann71'])
@@ -372,6 +428,30 @@ tabla.insertar([120, 'Welmann91'])
 tabla.insertar([65, 'Welmann91'])
 tabla.insertar([16, 'Welmann71 no se debe insertar'])
 tabla.insertar([1, 'Welmann'])
+tabla.insertar([53342, 'unico 53342'])
+tabla.insertar([12343, 'Welmann41'])
+tabla.insertar([14324, 'Welmann51'])
+tabla.insertar([143245, 'Welmann61'])
+tabla.insertar([13246, 'Welmann71'])
+tabla.insertar([14327, 'Welmann81'])
+tabla.insertar([13238, 'Welmann91'])
+tabla.insertar([10430, 'Welmann91'])
+tabla.insertar([5345, 'Welmann91'])
+tabla.insertar([53430, 'Welmann9'])
+tabla.insertar([5334, 'Welmann41'])
+tabla.insertar([1243, 'Welmann41'])
+tabla.insertar([4324, 'Welmann51'])
+tabla.insertar([14324, 'Welmann61'])
+tabla.insertar([1346, 'Welmann71'])
+tabla.insertar([1432, 'Welmann81'])
+tabla.insertar([138, 'Welmann91'])
+tabla.insertar([1043, 'Welmann91'])
+tabla.insertar([545, 'Welmann91'])
+tabla.insertar([530, 'Welmann9'])
+tabla.insertar([53342, 'repetido'])
+tabla.insertar([3, 'Welmann2'])
+
+
 
 print(tabla.extractTable())
 
@@ -424,3 +504,11 @@ tabla.imprimir()
 
 print(tabla.extractTable())
 print(type(45))
+
+tablaAleaoria = Tabla('Aleatoria', 3)
+
+for i in range(200):
+    tablaAleaoria.insertar([random.randint(1, 10000), random.randint(1, 100000), random.randint(1,10000)])
+
+print(tablaAleaoria.tamano)
+#tablaAleaoria.Grafico()

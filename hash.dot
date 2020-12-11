@@ -1,0 +1,53 @@
+digraph grafica{
+graph [pad="0.5"];
+nodesep=.05;
+rankdir=LR;
+node [shape=record,width=.1,height=.1];
+node0 [label = "<f0> 0|
+<f1> 1|
+<f2> 2|
+<f3> 3|
+<f4> 4|
+<f5> 5|
+<f6> 6|
+<f7> 7|
+<f8> 8|
+<f9> 9|
+<f10> 10|
+<f11> 11|
+<f12> 12",height=6.5, width=.8];
+nodeab[label = "{<n> ab| <p> }"];
+nodeba[label = "{<n> ba| <p> }"];
+nodearr[label = "{<n> arr| <p> }"];
+node0:f0 -> nodeab:n;
+nodeab:p -> nodeba:n;
+nodeba:p -> nodearr:n;
+nodeac[label = "{<n> ac| <p> }"];
+node0:f1 -> nodeac:n;
+nodead[label = "{<n> ad| <p> }"];
+node0:f2 -> nodead:n;
+nodeae[label = "{<n> ae| <p> }"];
+nodeaggg[label = "{<n> aggg| <p> }"];
+node0:f3 -> nodeae:n;
+nodeae:p -> nodeaggg:n;
+nodeaf[label = "{<n> af| <p> }"];
+node0:f4 -> nodeaf:n;
+nodeNone5 [shape=plaintext, label="None", width=0.5]
+node0:f5 -> nodeNone5
+nodeaab[label = "{<n> aab| <p> }"];
+nodeaba[label = "{<n> aba| <p> }"];
+node0:f6 -> nodeaab:n;
+nodeaab:p -> nodeaba:n;
+nodeNone7 [shape=plaintext, label="None", width=0.5]
+node0:f7 -> nodeNone7
+nodeabc[label = "{<n> abc| <p> }"];
+node0:f8 -> nodeabc:n;
+nodeacc[label = "{<n> acc| <p> }"];
+node0:f9 -> nodeacc:n;
+nodeNone10 [shape=plaintext, label="None", width=0.5]
+node0:f10 -> nodeNone10
+nodeNone11 [shape=plaintext, label="None", width=0.5]
+node0:f11 -> nodeNone11
+nodeaa[label = "{<n> aa| <p> }"];
+node0:f12 -> nodeaa:n;
+ }
