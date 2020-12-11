@@ -67,7 +67,7 @@ class BaseDatos:
         salida = self.Buscar(table)
         if salida[0]:
             temp = serealizar.rollback(table, self.directorio)
-            #temp.alterAddColumn(table)
+            temp.alterAddColumn()
             serealizar.commit(temp, table, self.directorio)
             return 0
         else:
@@ -78,7 +78,7 @@ class BaseDatos:
         salida = self.Buscar(table)
         if salida[0]:
             temp = serealizar.rollback(table, self.directorio)
-            #temp.alterDropColumn(table, columnNumber)
+            temp.alterDropColumn(columnNumber)
             serealizar.commit(temp, table, self.directorio)
             return 0
         else:
