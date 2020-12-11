@@ -1,81 +1,108 @@
 import Tabla
+import serealizar
+import os
 
 class BaseDatos:
-    def __init__(self, Name):
+    def __init__(self, Name, directorio):
         self.Name = Name
         self.list_table = []
+        self.directorio = directorio
+        for tabla in os.listdir(self.directorio):
+            temp = tabla.replace(".bin","")
+            self.list_table.append(temp)
 
 
-    # == BUSCAR BASES DE DATOS
+    # == BUSCAR TABLA
     def Buscar(self, table):
-        salida = []
         existe = False
-        col = 0
         i = 0
-        for nombre in self.list_table:
-            if nombre[0] == table:
-                existe = True
-                col = nombre[1]
-                break
-            else:
-                existe = False
-                i = i+1
-        salida = [existe, i, col]
+        if table in self.list_table:
+            existe = True
+        else:
+            existe = False
+            i = i+1
+        salida = [existe, i]
         return salida
 
 
     # == CREAR TABLAS
-
     def createTable(self, tableName, numberColumns):
-        salida = []
-        if len(self.list_table) == 0:
-            self.list_table.append([tableName, numberColumns])
-            existe = True
-        else:
-            salida = self.Buscar(tableName)
-            existe = salida[0]
-            if existe == False:
-                self.list_table.append([tableName, numberColumns])
-            
+        if not tableName in self.list_table:
+            self.list_table.append(tableName)
+            temp = Tabla.Tabla(tableName, numberColumns)
+            serealizar.commit(temp, tableName)
+                    
     # == MOSTRAR TABLAS
     def showTables(self):
-        nombre = []
-        for n in self.list_table:
-            nombre.append(n[0])
-        print(nombre)
+        return self.list_table
 
     # == CAMBIAR NOMBRES
     def alterTable(self, tableOld, tableNew):
+        temp = serealizar.rollback(tableOld)
+        os.remove(tableOld+".bin")
         salida = self.Buscar(tableOld)
         if salida[0]:
-            self.list_table[salida[1]][0]= tableNew
+            if not tableNew in self.list_table:
+                self.list_table[salida[1]]= tableNew
+                temp.alterTable(tableNew)
+                serealizar.commit(temp, tableNew)
+                return 0
+            else:
+                return 4
         else:
-            return 1
+            return 3
     
     # === ELIMINAR TABLA
     def dropTable(self,tableName):
         salida = self.Buscar(tableName)
         if salida[0]:
             self.list_table.pop(salida[1])
+            os.remove(tableName+".bin")
+            return 0
         else:
-            return 1
+            return 3
 
-    # === alterAdd
+    # === AGREGAR N-ESIMA COLUMNA
+    def alterAddColumn(self, table):
+        salida = self.Buscar(table)
+        if salida[0]:
+            temp = serealizar.rollback(table)
+            #temp.alterAddColumn(table)
+            serealizar.commit(temp, table)
+            return 0
+        else:
+            return 3
 
-    # === alterDrop
+    # === ELIMINAR N-ESIMA COLUMNA
+    def alterDropColumn(self, table, columnNumber):
+        salida = self.Buscar(table)
+        if salida[0]:
+            temp = serealizar.rollback(table)
+            #temp.alterDropColumn(table, columnNumber)
+            serealizar.commit(temp, table)
+            return 0
+        else:
+            return 3
 
-    # === extractTable 276
+    # === EXTRAER INFORMACIÓN
+    def extractTable(self, table):
+        if table in self.list_table:
+            temp = serealizar.rollback(table)
+            return Tabla.Tabla.extractTable(temp)
+    
+    # === GRAFICAR LAS TABLAS QUE CONTIENE LA BD
+    def graficar(self):
+        file = open('tablas.dot', "w")
+        file.write("digraph grafica{" + os.linesep)
+        file.write("rankdir=LR;" + os.linesep)
 
-B = BaseDatos('Alejandra')
-B.createTable('Ale',10)
-B.createTable('Marcos',5)
-B.createTable('Alejandro',20)
-B.createTable('Ale',1)
-B.createTable('Navarro',7)
-B.showTables()
-B.dropTable('Ale')
-B.showTables()
-B.createTable('YaFeliz:)',7)
-B.showTables()
-B.alterTable('Navarro','AleFeliz')
-B.showTables()
+        info = "<<table><tr>"
+        for i in self.list_table:
+            info += "<td>"+i+"</td>"
+        info += "</tr></table>>"
+
+        file.write(' }' + os.linesep)
+        file.close()
+        os.system('dot -Tpng tablas.dot -o tablas.png')
+        os.system('tablas.png')
+
