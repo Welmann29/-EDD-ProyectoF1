@@ -28,7 +28,9 @@ class ListaBaseDatos:
                 return 1
 
         else:
-            self.lista_bases_datos.append(DB.BaseDatos(databaseName))
+            temp = DB.BaseDatos(databaseName)
+            temp.directorio = main_path+"\\"+databaseName
+            self.lista_bases_datos.append(temp)
 
             temp_path = main_path+"\\"+databaseName
 

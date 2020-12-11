@@ -30,7 +30,7 @@ class BaseDatos:
         if not tableName in self.list_table:
             self.list_table.append(tableName)
             temp = Tabla.Tabla(tableName, numberColumns)
-            serealizar.commit(temp, tableName)
+            serealizar.commit(temp, tableName, self.directorio)
                     
     # == MOSTRAR TABLAS
     def showTables(self):
@@ -38,14 +38,14 @@ class BaseDatos:
 
     # == CAMBIAR NOMBRES
     def alterTable(self, tableOld, tableNew):
-        temp = serealizar.rollback(tableOld)
-        os.remove(tableOld+".bin")
+        temp = serealizar.rollback(tableOld, self.directorio)
+        os.remove(self.directorio+"\\"+tableOld+".bin")
         salida = self.Buscar(tableOld)
         if salida[0]:
             if not tableNew in self.list_table:
                 self.list_table[salida[1]]= tableNew
                 temp.alterTable(tableNew)
-                serealizar.commit(temp, tableNew)
+                serealizar.commit(temp, tableNew, self.directorio)
                 return 0
             else:
                 return 4
@@ -57,7 +57,7 @@ class BaseDatos:
         salida = self.Buscar(tableName)
         if salida[0]:
             self.list_table.pop(salida[1])
-            os.remove(tableName+".bin")
+            os.remove(self.directorio+"\\"+tableName+".bin")
             return 0
         else:
             return 3
@@ -66,9 +66,9 @@ class BaseDatos:
     def alterAddColumn(self, table):
         salida = self.Buscar(table)
         if salida[0]:
-            temp = serealizar.rollback(table)
+            temp = serealizar.rollback(table, self.directorio)
             #temp.alterAddColumn(table)
-            serealizar.commit(temp, table)
+            serealizar.commit(temp, table, self.directorio)
             return 0
         else:
             return 3
@@ -77,9 +77,9 @@ class BaseDatos:
     def alterDropColumn(self, table, columnNumber):
         salida = self.Buscar(table)
         if salida[0]:
-            temp = serealizar.rollback(table)
+            temp = serealizar.rollback(table, self.directorio)
             #temp.alterDropColumn(table, columnNumber)
-            serealizar.commit(temp, table)
+            serealizar.commit(temp, table, self.directorio)
             return 0
         else:
             return 3
@@ -87,8 +87,8 @@ class BaseDatos:
     # === EXTRAER INFORMACIÓN
     def extractTable(self, table):
         if table in self.list_table:
-            temp = serealizar.rollback(table)
-            return Tabla.Tabla.extractTable(temp)
+            temp = serealizar.rollback(table, self.directorio)
+            return temp.extractTable()
     
     # === GRAFICAR LAS TABLAS QUE CONTIENE LA BD
     def graficar(self):
@@ -105,4 +105,3 @@ class BaseDatos:
         file.close()
         os.system('dot -Tpng tablas.dot -o tablas.png')
         os.system('tablas.png')
-
