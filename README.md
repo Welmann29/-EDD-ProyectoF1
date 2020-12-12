@@ -1,6 +1,6 @@
 # -EDD-ProyectoF1
 ## Estructura de las tablas (Tablas hash). (Welmann Paniagua)
-  - insert(database, table, columns): inserta un registro en la estructura de datos persistente, database es el nombre de la base de datos, table es el nombre de la tabla y columns es una lista de campos a insertar. Devuelve un True si no hubo problema, y un False si no se logró insertar.
+- insert(database, table, columns): inserta un registro en la estructura de datos persistente, database es el nombre de la base de datos, table es el nombre de la tabla y columns es una lista de campos a insertar. Devuelve un True si no hubo problema, y un False si no se logró insertar.
 - update(database, table, id, columnNumber, value): actualiza el valor de una columna x en un registro id de una tabla de una base de datos. Devuelve True si se actualizó correctamente y False si no se logró actualizar.
 - deleteTable(database, tableName, id): elimina un nodo o elemento de página indicado de una tabla y base de datos especificada.
 - truncate(database, tableName): vacía la tabla de todos los registros.
@@ -27,5 +27,17 @@
  
 ## Reportes
 Cada estructura tendrá su propio método para auto-graficarse, Pablo será el encargado de llamar estos métodos para ir mostrando la estructuración. (Pablo Rivas)
+
 ## Manuales. 
 Todos aportaremos para el manual, sin embargo, me gustaría que alguno se encargara de darle un bonito diseño (Fercho).
+
+## Sistema de almacenamiento.
+pensar en una forma de llevar los datos a discos para no tener grandes cargas de archivo en memoria
+
+## Eficencia de la busqueda de strings
+No logre hacer una busqueda muy eficiente para las llaves strings, algo que va a servir durante todo el proyecto, lo ideal es encontrar una forma mas rapida y con menos iteraciones 
+
+### Tareas menores
+- Función para cambiar path de la carpeta data, esto podría servir en caso la consola no se encuentre en el directorio destino (Fercho)
+- Actualizar las funciones de TytusStorage con la definición expandida (tipos de parámetros, valores de retorno) (Fercho)
+- Que Wellman nos vuelva colaboradores (Wellman)
