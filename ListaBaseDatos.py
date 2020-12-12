@@ -1,7 +1,7 @@
 import BaseDatos as DB
 import os
 
-main_path = os.getcwd()+"\\data"
+main_path = os.getcwd()+"\\data\\hash"
 
 
 class ListaBaseDatos:
@@ -9,51 +9,48 @@ class ListaBaseDatos:
     def __init__(self):
 
         self.lista_bases_datos = []
+        
 
-    def Buscar(self, databaseName):
+    def Buscar(self, database):
 
         for base_datos in self.lista_bases_datos:
 
-            if base_datos.Name == databaseName:
+            if base_datos.Name == database:
                 return base_datos
 
         else:
             return False
 
-    def createDatabase(self, mode, databaseName):
+
+    def createDatabase(self, database):
 
         for base_datos in self.lista_bases_datos:
 
-            if base_datos.Name == databaseName:
-                return 1
+            if base_datos.Name == database:
+                return 2
 
         else:
-            temp = DB.BaseDatos(databaseName)
-            temp.directorio = main_path+"\\"+databaseName
-            self.lista_bases_datos.append(temp)
+            temp_path = main_path+"\\"+database
 
-            temp_path = main_path+"\\"+databaseName
-
-            if not os.path.isdir(temp_path): #######
+            if not os.path.isdir(temp_path):
                 os.mkdir(temp_path)
+
+            temp = DB.BaseDatos(database, temp_path)          
+            self.lista_bases_datos.append(temp)
                 
             return 0
 
+
     def showDatabases(self):
         
-        print("DB ALMACENADAS:")
-        print("//==============================//")
-        print(" - -            BD            - -")
-
         temp_list = []
 
         for base_datos in self.lista_bases_datos:
             temp_list.append(base_datos.Name)
-            print(base_datos.Name)
 
-        print("//==============================//")
-
+        self.graficar()
         return temp_list
+
 
     def alterDatabase(self, databaseOld, databaseNew):
 
@@ -63,7 +60,6 @@ class ListaBaseDatos:
         if temp_old:
 
             if not temp_new:
-
                 temp_old.Name = databaseNew
 
                 temp_path_old = main_path+"\\"+databaseOld
@@ -71,33 +67,47 @@ class ListaBaseDatos:
 
                 os.rename(temp_path_old, temp_path_new)
 
-                print("Base de datos '"+databaseOld +
-                      "' renombrada a '"+databaseNew+"'")
-                return True
+                return 0
 
             else:
-                print("Base de datos '"+databaseNew+"' ya existente")
-                return False
+                return 3
 
         else:
-            print("Base de datos '"+databaseOld+"' no encontrada")
-            return False
+            return 2
 
-    def dropDatabase(self, databaseName):
 
-        temp = self.Buscar(databaseName)
+    def dropDatabase(self, database):
+
+        temp = self.Buscar(database)
 
         if temp:
             self.lista_bases_datos.remove(temp)
 
-            temp_path = main_path+"\\"+databaseName
+            temp_path = main_path+"\\"+database
 
             if os.path.isdir(temp_path):
                 os.rmdir(temp_path)
 
-            print("Base de datos '"+databaseName+"' eliminada con éxito")
             return 0
 
         else:
-            print("Base de datos '"+databaseName+"' no encontrada")
             return 2
+
+
+    def graficar(self):
+        print("si")
+        file = open('bases_de_datos.dot', "w")
+        file.write("digraph grafica{" + os.linesep)
+        file.write("rankdir=LR;" + os.linesep)
+
+        info = "<<table><tr>"
+        for i in self.lista_bases_datos:
+            info += "<td>"+i.Name+"</td>"
+        info += "</tr></table>>"
+
+        file.write(info)
+        file.write(' }' + os.linesep)
+        file.close()
+        os.system('dot -Tpng bases_de_datos.dot -o bases_de_datos.png')
+        os.system('bases_de_datos.png')
+        print("siii")
