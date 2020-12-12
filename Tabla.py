@@ -5,9 +5,22 @@ import random
 
 
 class Nodo(object):
-    def __init__(self, datos):
+    def __init__(self, datos, primaria, posicion):
+        self.primaria = ''
         self.datos = datos
-        self.primaria = datos[0]
+        if primaria is None:
+            self.primaria = posicion
+        elif len(primaria) == 1:
+            self.primaria = datos[primaria[0]]
+        else:
+            contador = 0
+            for i in primaria:
+                if contador == len(primaria) - 1:
+                    self.primaria += str(datos[i])
+                else:
+                    self.primaria += str(datos[i]) + '-'
+                contador += 1
+
         if type(self.primaria) is str:
             self.tipo = 'str'
         else:
@@ -23,6 +36,8 @@ class Tabla(object):
         self.elementos = 0
         self.factorCarga = 0
         self.tipoPrimaria = None
+        self.PK = None
+        self.contadorPK = 0
         for i in range(self.tamano):
             self.vector.append(None)
 
@@ -45,7 +60,7 @@ class Tabla(object):
 
     def insertar(self, datos):
         if len(datos) == self.columnas:
-            nuevo = Nodo(datos)
+            nuevo = Nodo(datos, self.PK, self.contadorPK)
             if self.elementos == 0:
                 self.tipoPrimaria = nuevo.tipo
             else:
@@ -57,6 +72,7 @@ class Tabla(object):
                 self.vector[posicion] = []
                 self.vector[posicion].append(nuevo)
                 self.elementos += 1
+                self.contadorPK += 1
                 return True
 
             '''
@@ -82,9 +98,10 @@ class Tabla(object):
 
             self.factorCarga = self.elementos / self.tamano
 
-            if self.factorCarga > 0.8:
+            if self.factorCarga > 0.9:
                 self.rehashing()
 
+            self.contadorPK += 1
             return True
         else:
             return False
@@ -106,6 +123,7 @@ class Tabla(object):
         for tamaño in range(self.tamano):
             self.vector.append(None)
 
+        self.contadorPK = 0
         for nodo in lista:
             self.insertar(nodo.datos)
 
@@ -227,6 +245,9 @@ class Tabla(object):
     def truncate(self):
         self.vector = []
         self.tamano = 13
+        self.contadorPK = 0
+        self.elementos = 0
+        self.factorCarga = 0
         for i in range(self.tamano):
             self.vector.append(None)
 
@@ -237,7 +258,9 @@ class Tabla(object):
     def deleteTable(self, primaria):
         if (type(primaria) is str) or (type(primaria) is int):
             indice = self.funcionHash(primaria)
-            if len(self.vector[indice]) <= 1:
+            if self.vector[indice] is None:
+                return False
+            elif len(self.vector[indice]) <= 1:
                 self.vector[indice] = None
                 self.elementos -= 1
                 return True
@@ -325,7 +348,7 @@ class Tabla(object):
 
         for i in range(self.tamano):
             if i == 0:
-                file.write('node0 [label = "<f0> 0|' + os.linesep)
+                file.write('vector [label = "<f0> 0|' + os.linesep)
             elif i == self.tamano - 1:
                 file.write(
                     '<f' + str(i) + '> ' + str(i) + '",height=' + str(self.tamano / 2) + ', width=.8];' + os.linesep)
@@ -336,18 +359,21 @@ class Tabla(object):
         for listaNodos in self.vector:
             if not listaNodos is None:
                 for nodo in listaNodos:
-                    file.write('node' + str(nodo.primaria) + '[label = "{<n> ' + str(
-                        nodo.primaria) + '| <p> }"];' + os.linesep)
-                file.write('node0:f' + str(contador) + ' -> node' + str(listaNodos[0].primaria) + ':n;' + os.linesep)
+                    file.write('node' + str(nodo.primaria).replace(' ', '').replace('-', 'y') + '[label = "{<n> ' + str(
+                        nodo.primaria).replace(' ', '').replace('-', 'y') + '| <p> }"];' + os.linesep)
+                file.write(
+                    'vector:f' + str(contador) + ' -> node' + str(listaNodos[0].primaria).replace(' ', '').replace('-',
+                                                                                                                   'y') + ':n;' + os.linesep)
                 if len(listaNodos) > 1:
                     for i in range(len(listaNodos)):
                         if not i == len(listaNodos) - 1:
-                            file.write('node' + str(listaNodos[i].primaria) + ':p -> node' + str(
-                                listaNodos[i + 1].primaria) + ':n;' + os.linesep)
+                            file.write('node' + str(listaNodos[i].primaria).replace(' ', '').replace('-',
+                                                                                                     'y') + ':p -> node' + str(
+                                listaNodos[i + 1].primaria).replace(' ', '').replace('-', 'y') + ':n;' + os.linesep)
 
             else:
                 file.write('nodeNone' + str(contador) + ' [shape=plaintext, label="None", width=0.5]' + os.linesep)
-                file.write('node0:f' + str(contador) + ' -> nodeNone' + str(contador) + os.linesep)
+                file.write('vector:f' + str(contador) + ' -> nodeNone' + str(contador) + os.linesep)
             contador += 1
 
         file.write(' }' + os.linesep)
@@ -377,20 +403,81 @@ class Tabla(object):
         self.columnas -= 1
         return 0
 
+    def definePK(self, referencias):
+        try:
+            for i in referencias:
+                if i >= self.columnas:
+                    return 4
+            self.PK = referencias
+            if self.elementos > 0:
+                self.RestructuracionPorLlavePrimaria()
+            return 0
+        except:
+            return 1
 
+    def RestructuracionPorLlavePrimaria(self):
+        self.elementos = 0
+        self.factorCarga = 0
+        self.tamano = 13
+        self.contadorPK = 0
+        self.tipoPrimaria = None
+        lista = []
+        for i in self.vector:
+            if i is None:
+                '''No hace nada'''
+            else:
+                for j in i:
+                    lista.append(j)
+        self.vector = []
+        for i in range(13):
+            self.vector.append(None)
+        for nodo in lista:
+            self.insertar(nodo.datos)
 
-lista = []
-lista.append(Nodo([10, 'Welmann']))
-lista.append(Nodo([1, 'Welmann']))
-lista.append(Nodo([15, 'Welmann']))
-lista.append(Nodo([129, 'Welmann']))
-lista.append(Nodo([12, 'Welmann']))
+    def UnirLlave(self, primaria):
+        combinada = ''
+        contador = 0
+        for i in primaria:
+            if contador == len(primaria) - 1:
+                combinada += str(i)
+            else:
+                combinada += str(i) + '-'
+            contador += 1
+        return combinada
 
-for i in lista:
-    print(i.primaria)
+    def extractRangeTable(self, lower, upper):
+        if len(lower) > 1:
+            lower = self.UnirLlave(lower)
+            upper = self.UnirLlave(upper)
+        else:
+            lower = lower[0]
+            upper = upper[0]
+
+        lista = []
+        for i in self.vector:
+            if i is None:
+                '''No hace nada'''
+            else:
+                for j in i:
+                    lista.append(j)
+
+        listaRetorno = []
+        if self.tipoPrimaria == 'int':
+            for nodo in lista:
+                if lower <= nodo.primaria <= upper:
+                    listaRetorno.append(nodo.datos)
+        else:
+            for nodo in lista:
+                if self.toASCII(lower) <= self.toASCII(nodo.primaria) <= self.toASCII(upper):
+                    listaRetorno.append(nodo.datos)
+
+        return listaRetorno
+
 
 tabla = Tabla('Integrantes', 2)
+tabla.definePK([0])
 tabla2 = Tabla('Integrantes2', 2)
+tabla2.definePK([0])
 
 tabla2.insertar(['aa', 'Dato1'])
 tabla2.insertar(['aa', 'Dato1 Repetido'])
@@ -408,7 +495,8 @@ tabla2.insertar(['arr', 'Dato11'])
 tabla2.insertar(['acc', 'Dato10'])
 
 print(tabla2.extractTable())
-# tabla2.Grafico()
+print('Rango de tabla')
+print(tabla2.extractRangeTable(['aa'], ['aab']))
 
 tabla2.imprimir()
 tabla2.alterAddColumn()
@@ -417,17 +505,6 @@ tabla2.imprimir()
 print(tabla2.alterDropColumn(3))
 print(tabla2.alterDropColumn(2))
 tabla2.imprimir()
-
-
-lista = tabla.OrdenarBurbuja(lista)
-
-print(tabla.Existe(lista, 12))
-print(tabla.Existe(lista, 15))
-print(tabla.Existe(lista, 129))
-print(tabla.Existe(lista, 14))
-
-for i in lista:
-    print(i.primaria)
 
 tabla.insertar([65, 'Primer65'])
 tabla.insertar([1, 'Welmann', 'Paniagua'])
@@ -487,11 +564,22 @@ tabla.insertar([530, 'Welmann9'])
 tabla.insertar([53342, 'repetido'])
 tabla.insertar([3, 'Welmann2'])
 
+print(tabla.extractRangeTable([10], [18]))
+
+print('Tabla entera:')
+
+# tabla.Grafico()
+
 print(tabla.extractTable())
 
 tabla.imprimir()
+tabla.definePK([0, 1])
+print('Range table compuesta')
+print(tabla.extractRangeTable([8, 'Welmann7'], [120, 'Welmann91']))
+tabla.imprimir()
+tabla.Grafico()
 print('')
-
+'''
 print()
 print()
 
@@ -519,16 +607,6 @@ print(tabla.ExtraerTupla(11))
 print(tabla.update(11, 1, 'NuevoValor'))
 print(tabla.ExtraerTupla(11))
 
-print()
-print(tabla2.ExtraerTupla('aa'))
-print(tabla2.update('aa', 1, 'Nuevo valor en tabla string'))
-print(tabla2.ExtraerTupla('aa'))
-
-print()
-print(tabla2.ExtraerTupla('aa'))
-tabla2.deleteTable('aa')
-print(tabla2.ExtraerTupla('aa'))
-
 tabla.truncate()
 tabla.imprimir()
 tabla.insertar([4, 'Holuuuuu'])
@@ -545,4 +623,5 @@ for i in range(200):
     tablaAleaoria.insertar([random.randint(1, 10000), random.randint(1, 100000), random.randint(1, 10000)])
 
 print(tablaAleaoria.tamano)
-#tablaAleaoria.Grafico()
+
+'''
