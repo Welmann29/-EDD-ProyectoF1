@@ -48,8 +48,8 @@ class ListaBaseDatos:
         for base_datos in self.lista_bases_datos:
             temp_list.append(base_datos.Name)
 
-        self.graficar()
         return temp_list
+        
 
 
     def alterDatabase(self, databaseOld, databaseNew):
@@ -93,21 +93,22 @@ class ListaBaseDatos:
         else:
             return 2
 
-
     def graficar(self):
-        print("si")
-        file = open('bases_de_datos.dot', "w")
+        file = open('dbs.dot', "w")
         file.write("digraph grafica{" + os.linesep)
         file.write("rankdir=LR;" + os.linesep)
-
-        info = "<<table><tr>"
-        for i in self.lista_bases_datos:
-            info += "<td>"+i.Name+"</td>"
-        info += "</tr></table>>"
-
-        file.write(info)
+        info = "{"
+        
+        j = 0
+        for i in self.list_table:
+            if j == 0:
+                info += i+ os.linesep
+            else:
+                info += "|"+i+ os.linesep
+            j = j+1
+            
+        file.write('dbs[shape=record label="'+info+'}"];')
         file.write(' }' + os.linesep)
         file.close()
-        os.system('dot -Tpng bases_de_datos.dot -o bases_de_datos.png')
-        os.system('bases_de_datos.png')
-        print("siii")
+        os.system('dot -Tpng dbs.dot -o dbs.png')
+        os.system('dbs.png')
