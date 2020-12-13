@@ -1,10 +1,12 @@
 import ListaBaseDatos as Storage
+import serealizar
 import os
 import re
 
 storage = Storage.ListaBaseDatos()
 main_path = os.getcwd()+"\\data\\hash"
-db_name_pattern = "^[a-zA-Z_].*"
+db_name_pattern = "^[a-zA-Z][a-zA-Z0-9#@$_]*"
+table_name_pattern = "^[a-zA-Z_][a-zA-Z0-9#@$_]*"
 
 
 # Cambiar la ubicación del directorio data (por defecto se usará el directorio de consola)
@@ -48,9 +50,6 @@ def __init__():
     for db in os.listdir(main_path):
         storage.createDatabase(db)
 
-    #print(">> Se cargaron:")
-    #showDatabases()
-
 __init__()
 
 # ==//== funciones con respecto a ListaBaseDatos ==//==
@@ -87,7 +86,7 @@ def dropDatabase(database: str) -> int:
 # ==//== funciones con respecto a BaseDatos ==//==
 # Primero se busca la base de datos y luego se llama la función sobre la clase BaseDatos
 
-def createTable(database:str, table:str, numberColumns:list) -> int:
+def createTable(database:str, table:str, numberColumns:int) -> int:
 
     temp = storage.Buscar(database)
 
@@ -98,13 +97,24 @@ def createTable(database:str, table:str, numberColumns:list) -> int:
         return 2
 
 
-def definePK(database:str, table:str, columns:list) -> int:
+def alterAddPK(database:str, table:str, columns:list) -> int:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.definePK(table, qcolumns)
+        return temp.alterAddPK(table, columns)
 
+    else:
+        return 2
+
+
+def alterDropPK(database:str, table:str, columns:list) -> int:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.alterDropPK(table, columns)
+        
     else:
         return 2
 
@@ -164,7 +174,7 @@ def alterDropColumn(database:str, table:str, columnNumber:int) -> int:
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.alterDrop(table, columnNumber)
+        return temp.alterDropColumn(table, columnNumber)
 
     else:
         return 2
@@ -186,132 +196,149 @@ def extractRangeTable(database:str, table:str, lower:any, upper:any) -> list:
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.extractTable(table)
+        return temp.extractRangeTable(table,lower,upper)
 
     else:
         return None
 
 
-# ==//== funciones con respecto a Tabla ==//== (susceptible a cambios)
+# ==//== funciones con respecto a Tabla ==//==
 # Primero se busca la base de datos, luego la tabla, y luego se llama la función sobre la clase Tabla
 
-def insert(databaseName, tableName, columns):
+def insert(database:str, table:str, register:list) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
 
-        temp = temp.Buscar(tableName)
+        b = temp.Buscar(table)        
+        nombre = temp.list_table[b[1]]
+        
+        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
 
-        if temp:
-            return temp.insertar(columns)
+        if b[0]:
+            var = tabla.insertar(register)            
+            serealizar.commit(tabla, table, main_path+"\\"+database)
+
+            return var
 
         else:
-            print("Tabla '"+tableName+"' no creada")
+            return 3
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def update(databaseName, tableName, id, columnNumber, value):
+def update(database:str, table:str, register:dict, columns:list) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
 
-        temp = temp.Buscar(tableName)
+        b = temp.Buscar(table)        
+        nombre = temp.list_table[b[1]]
+        
+        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
 
-        if temp:
-            return temp.update(id, columnNumber, value)
+        if b[0]:
+            var = tabla.update(columns, register)            
+            serealizar.commit(tabla, table, main_path+"\\"+database)
+
+            return var
 
         else:
-            print("Tabla '"+tableName+"' no creada")
+            return 3
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def deleteTable(databaseName, tableName, id):
+def delete(database:str, table:str, columns:list) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
 
-        temp = temp.Buscar(tableName)
+        b = temp.Buscar(table)        
+        nombre = temp.list_table[b[1]]
+        
+        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
 
-        if temp:
-            return temp.deleteTable(id)
+        if b[0]:
+            var = tabla.deleteTable(columns)            
+            serealizar.commit(tabla, table, main_path+"\\"+database)
+
+            return var
 
         else:
-            print("Tabla '"+tableName+"' no creada")
+            return 3
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def truncate(databaseName, tableName):
+def truncate(database:str, table:str) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
 
-        temp = temp.Buscar(tableName)
+        b = temp.Buscar(table)        
+        nombre = temp.list_table[b[1]]
+        
+        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
 
-        if temp:
-            return temp.truncate()
+        if b[0]:
+            var = tabla.truncate()            
+            serealizar.commit(tabla, table, main_path+"\\"+database)
+
+            return var
 
         else:
-            print("Tabla '"+tableName+"' no creada")
+            return 3
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
+#=====> susceptible a cambios
+def extractRow(database:str, table:str, id) -> int:
 
-def extractRow(databaseName, tableName, id):
-
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
 
-        temp = temp.Buscar(tableName)
+        temp = temp.Buscar(table)
 
         if temp:
             return temp.extractRow(id)
 
         else:
-            print("Tabla '"+tableName+"' no creada")
+            return 3
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
 # ==//== carga de tabla mediante archivo CSV ==//==
 
-def loadCSV(filecsv, databaseName, tableName, numberColumns):
+def loadCSV(filecsv:str, database:str, table:str, numberColumns) -> int:
 
     try:
         archivo = open(filecsv)
 
     except:
-        print("No se encontró el archivo del CSV")
         return 1
 
-    database_temp = storage.Buscar(databaseName)
-    table_temp = storage.Buscar(databaseName).Buscar(tableName)
+    database_temp = storage.Buscar(database)
+    table_temp = storage.Buscar(database).Buscar(table)
 
     if not database_temp:
-        createDatabase(5, databaseName)
+        createDatabase(5, database)
 
     if not table_temp:
-        createTable(databaseName, tableName, numberColumns)
+        createTable(database, table, numberColumns)
 
     elif table_temp.tamano != numberColumns:
-        print("no coinciden")
         return 1
 
     header = archivo.readline().replace("\n", "").split(",")
@@ -322,7 +349,7 @@ def loadCSV(filecsv, databaseName, tableName, numberColumns):
     for registro in temp_registros:
         registros.append(registro.replace("\n", "").split(","))
 
-    # insertar
+    # insertar WIP
 
     print(header)
     print(registros)
