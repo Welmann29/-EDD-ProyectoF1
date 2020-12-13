@@ -73,7 +73,7 @@ class Tabla(object):
                 self.vector[posicion].append(nuevo)
                 self.elementos += 1
                 self.contadorPK += 1
-                return True
+                return 0
 
             '''
             Aqui se verifica que no existan valores repetidos ya que estamos hablando de llaves primarias,
@@ -81,10 +81,10 @@ class Tabla(object):
             '''
             if self.tipoPrimaria == 'int':
                 if self.Existe(self.vector[posicion], nuevo.primaria):
-                    return False
+                    return 4
             else:
                 if self.ExisteToAscii(self.vector[posicion], nuevo.primaria):
-                    return False
+                    return 4
 
             self.vector[posicion].append(nuevo)  # Se agrega el dato a la lista
 
@@ -102,9 +102,9 @@ class Tabla(object):
                 self.rehashing()
 
             self.contadorPK += 1
-            return True
+            return 0
         else:
-            return False
+            return 5
 
     def rehashing(self):
         while not (self.factorCarga < 0.3):
@@ -216,25 +216,29 @@ class Tabla(object):
     '''
 
     def ExtraerTupla(self, primaria):
+        if len(primaria) > 1:
+            primaria = self.UnirLlave(primaria)
+        else:
+            primaria = primaria[0]
         if self.tipoPrimaria == 'int':
             if type(primaria) is str:
-                return False
+                return 1
             indice = self.funcionHash(primaria)
             casilla = self.vector[indice]
             if casilla is None:
-                return False
+                return 4  # Llave primaria no existe
             nodo = self.BusquedaBinariaDevlviendoNodo(casilla, primaria)
         else:
             if type(primaria) is int:
-                return False
+                return 1
             indice = self.funcionHash(primaria)
             casilla = self.vector[indice]
             if casilla is None:
-                return False
+                return 4  # Llave primaria no existe
             nodo = self.BuscandoNodoToAscii(casilla, primaria)
 
         if type(nodo) == bool:
-            return False
+            return 1
         else:
             return nodo.datos
 
@@ -243,35 +247,46 @@ class Tabla(object):
     '''
 
     def truncate(self):
-        self.vector = []
-        self.tamano = 13
-        self.contadorPK = 0
-        self.elementos = 0
-        self.factorCarga = 0
-        for i in range(self.tamano):
-            self.vector.append(None)
+        try:
+            self.vector = []
+            self.tamano = 13
+            self.contadorPK = 0
+            self.elementos = 0
+            self.factorCarga = 0
+            for i in range(self.tamano):
+                self.vector.append(None)
+            return 0
+        except:
+            return 1
 
     '''
     deleteTable, elimina un registro de la tabla
     '''
 
     def deleteTable(self, primaria):
+        if len(primaria) > 1:
+            primaria = self.UnirLlave(primaria)
+        else:
+            primaria = primaria[0]
         if (type(primaria) is str) or (type(primaria) is int):
             indice = self.funcionHash(primaria)
             if self.vector[indice] is None:
-                return False
-            elif len(self.vector[indice]) <= 1:
-                self.vector[indice] = None
-                self.elementos -= 1
-                return True
+                return 4
+            elif len(self.vector[indice]) == 1:
+                if self.vector[indice][0].primaria == primaria:
+                    self.vector[indice] = None
+                    self.elementos -= 1
+                    return 0
+                else:
+                    return 4
             nuevo = self._delete(self.vector[indice], primaria)
             if type(nuevo) == bool:
-                return False
+                return 4
             else:
                 self.vector[indice] = nuevo
-                return True
+                return 0
         else:
-            return False
+            return 1
 
     def _delete(self, lista, primaria):
         if self.tipoPrimaria == 'int':
@@ -288,32 +303,44 @@ class Tabla(object):
                     return lista
             return False
 
-    def update(self, primaria, numeroColumna, nuevoValor):
-        if not (numeroColumna < self.columnas):  # Si el numero de columna es mayor a las definidas falla
-            return False
+    def update(self, primaria, registro):
+        if len(primaria) > 1:
+            primaria = self.UnirLlave(primaria)
+        else:
+            primaria = primaria[0]
+        keys = registro.keys()
+        for i in keys:
+            if i >= self.columnas:
+                return 1
 
         if self.tipoPrimaria == 'int':
             if not (type(primaria) is int):
-                return False
+                return 1
             indice = self.funcionHash(primaria)
+            if self.vector[indice] is None:
+                return 4
             if not self.Existe(self.vector[indice], primaria):
-                return False
+                return 4
             elemento = self.BusquedaBinariaDevlviendoNodo(self.vector[indice], primaria)
             indiceInterno = self.vector[indice].index(elemento)
-            elemento.datos[numeroColumna] = nuevoValor
+            for i in keys:
+                elemento.datos[i] = registro[i]
             self.vector[indice][indiceInterno] = elemento
-            return True
+            return 0
         else:
             if not (type(primaria) is str):
-                return False
+                return 1
             indice = self.funcionHash(primaria)
+            if self.vector[indice] is None:
+                return 4
             if not self.ExisteToAscii(self.vector[indice], primaria):
-                return False
+                return 4
             elemento = self.BuscandoNodoToAscii(self.vector[indice], primaria)
             indiceInterno = self.vector[indice].index(elemento)
-            elemento.datos[numeroColumna] = nuevoValor
+            for i in keys:
+                elemento.datos[i] = registro[i]
             self.vector[indice][indiceInterno] = elemento
-            return True
+            return 0
 
     def extractTable(self):
         lista = []
@@ -336,7 +363,11 @@ class Tabla(object):
             return []
 
     def alterTable(self, name):
-        self.nombre = name
+        try:
+            self.nombre = name
+            return 0
+        except:
+            return 1
 
     def Grafico(self):
         file = open('hash.dot', "w")
@@ -382,35 +413,52 @@ class Tabla(object):
         os.system('hash.png')
 
     def alterAddColumn(self):
-        for i in self.vector:
-            if i is None:
-                '''No hace nada'''
-            else:
-                for j in i:
-                    j.datos.append(None)
-        self.columnas += 1
-        return 0
+        try:
+            for i in self.vector:
+                if i is None:
+                    '''No hace nada'''
+                else:
+                    for j in i:
+                        j.datos.append(None)
+            self.columnas += 1
+            return 0
+        except:
+            return 1
 
     def alterDropColumn(self, numero):
-        if numero >= self.columnas:
-            return 4
-        for i in self.vector:
-            if i is None:
-                '''No hace nada'''
-            else:
-                for j in i:
-                    j.datos.pop(numero)
-        self.columnas -= 1
-        return 0
-
-    def definePK(self, referencias):
         try:
+            if numero >= self.columnas:
+                return 4
+            for i in self.vector:
+                if i is None:
+                    '''No hace nada'''
+                else:
+                    for j in i:
+                        j.datos.pop(numero)
+            self.columnas -= 1
+            return 0
+        except:
+            return 1
+
+    def alterAddPK(self, referencias):
+        try:
+            if not (self.PK is None):
+                return 4
             for i in referencias:
                 if i >= self.columnas:
-                    return 4
+                    return 5
             self.PK = referencias
             if self.elementos > 0:
                 self.RestructuracionPorLlavePrimaria()
+            return 0
+        except:
+            return 1
+
+    def alterDropPK(self):
+        try:
+            if self.PK is None:
+                return 4
+            self.PK = None
             return 0
         except:
             return 1
@@ -475,35 +523,37 @@ class Tabla(object):
 
 
 tabla = Tabla('Integrantes', 2)
-tabla.definePK([0])
-tabla2 = Tabla('Integrantes2', 2)
-tabla2.definePK([0])
+tabla.alterAddPK([0])
+tabla2 = Tabla('Integrantes2', 3)
+tabla2.alterAddPK([0])
 
-tabla2.insertar(['aa', 'Dato1'])
-tabla2.insertar(['aa', 'Dato1 Repetido'])
-tabla2.insertar(['ab', 'Dato2'])
-tabla2.insertar(['ba', 'Dato2 invertido'])
-tabla2.insertar(['aab', 'Dato3'])
-tabla2.insertar(['aba', 'Dato3 modificado'])
-tabla2.insertar(['ac', 'Dato4'])
-tabla2.insertar(['ad', 'Dato5'])
-tabla2.insertar(['ae', 'Dato6'])
-tabla2.insertar(['af', 'Dato7'])
-tabla2.insertar(['aggg', 'Dato8'])
-tabla2.insertar(['abc', 'Dato9'])
-tabla2.insertar(['arr', 'Dato11'])
-tabla2.insertar(['acc', 'Dato10'])
+tabla2.insertar(['aa', 'Dato1', 45])
+tabla2.insertar(['aa', 'Dato1 Repetido', 8])
+tabla2.insertar(['ab', 'Dato2', 9])
+tabla2.insertar(['ba', 'Dato2 invertido', 10])
+tabla2.insertar(['aab', 'Dato3', 11])
+tabla2.insertar(['aba', 'Dato3 modificado', 12])
+tabla2.insertar(['ac', 'Dato4', 13])
+tabla2.insertar(['ad', 'Dato5', 14])
+tabla2.insertar(['ae', 'Dato6', 15])
+tabla2.insertar(['af', 'Dato7', 16])
+tabla2.insertar(['aggg', 'Dato8', 489])
+tabla2.insertar(['abc', 'Dato9', 789])
+tabla2.insertar(['arr', 'Dato11', 87])
+tabla2.insertar(['acc', 'Dato10', 756])
 
 print(tabla2.extractTable())
 print('Rango de tabla')
 print(tabla2.extractRangeTable(['aa'], ['aab']))
 
 tabla2.imprimir()
-tabla2.alterAddColumn()
+print('Probando add column')
+print(tabla2.alterAddColumn())
+print(tabla2.alterAddColumn())
 print()
 tabla2.imprimir()
+print(tabla2.alterDropColumn(5))
 print(tabla2.alterDropColumn(3))
-print(tabla2.alterDropColumn(2))
 tabla2.imprimir()
 
 tabla.insertar([65, 'Primer65'])
@@ -564,6 +614,7 @@ tabla.insertar([530, 'Welmann9'])
 tabla.insertar([53342, 'repetido'])
 tabla.insertar([3, 'Welmann2'])
 
+print('Extrayendo parte de la tabla')
 print(tabla.extractRangeTable([10], [18]))
 
 print('Tabla entera:')
@@ -573,12 +624,46 @@ print('Tabla entera:')
 print(tabla.extractTable())
 
 tabla.imprimir()
-tabla.definePK([0, 1])
+print('Tratando de redefinir PK')
+print(tabla.alterAddPK([0, 1]))
+print('Quitando PK')
+print(tabla.alterDropPK())
+print('Volviendo a poner PK')
+print(tabla.alterAddPK([0, 1]))
 print('Range table compuesta')
 print(tabla.extractRangeTable([8, 'Welmann7'], [120, 'Welmann91']))
 tabla.imprimir()
 tabla.Grafico()
+tabla.alterAddColumn()
+print('Probando updates compuestas')
+print(tabla.update([666], {1: 'hola', 2: 'puto'}))
+print(tabla.update([12], {1: 'hola', 2: 'Me modificaron'}))
+print(tabla.update([12, 'Welmann21'], {1: 'hola', 2: 'Me modificaron'}))
+print(tabla.update([12, 'Welmann7777'], {1: 'hola', 2: 'Me modificaron'}))
+print('Probando deletes compuestos')
+print(tabla.deleteTable([12, 'jojojojo']))
+print(tabla.deleteTable([545, 'Welmann91']))
+tabla.imprimir()
+print('Extraer tupla compuesta')
+print(tabla.ExtraerTupla([3, 'unico 3']))
+
 print('')
+print('Quitando PK')
+print(tabla.alterDropPK())
+print('Volviendo a poner PK')
+print(tabla.alterAddPK([0]))
+tabla.alterAddColumn()
+
+print(tabla.update([666], {1: 'hola', 2: 'puto'}))
+print(tabla.update([12], {1: 'hola', 2: 'Me modificaron'}))
+tabla.imprimir()
+print('Delete de valor no existente')
+print(tabla.deleteTable([666]))
+print('Delete exitoso')
+print(tabla.deleteTable([2]))
+print('Extraer tupla normal')
+print(tabla.ExtraerTupla([1346]))
+tabla.imprimir()
 '''
 print()
 print()

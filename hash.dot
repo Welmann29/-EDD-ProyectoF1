@@ -1,0 +1,394 @@
+digraph grafica{
+graph [pad="0.5"];
+nodesep=.05;
+rankdir=LR;
+node [shape=record,width=.1,height=.1];
+vector [label = "<f0> 0|
+<f1> 1|
+<f2> 2|
+<f3> 3|
+<f4> 4|
+<f5> 5|
+<f6> 6|
+<f7> 7|
+<f8> 8|
+<f9> 9|
+<f10> 10|
+<f11> 11|
+<f12> 12|
+<f13> 13|
+<f14> 14|
+<f15> 15|
+<f16> 16|
+<f17> 17|
+<f18> 18|
+<f19> 19|
+<f20> 20|
+<f21> 21|
+<f22> 22|
+<f23> 23|
+<f24> 24|
+<f25> 25|
+<f26> 26|
+<f27> 27|
+<f28> 28|
+<f29> 29|
+<f30> 30|
+<f31> 31|
+<f32> 32|
+<f33> 33|
+<f34> 34|
+<f35> 35|
+<f36> 36|
+<f37> 37|
+<f38> 38|
+<f39> 39|
+<f40> 40|
+<f41> 41|
+<f42> 42|
+<f43> 43|
+<f44> 44|
+<f45> 45|
+<f46> 46|
+<f47> 47|
+<f48> 48|
+<f49> 49|
+<f50> 50|
+<f51> 51|
+<f52> 52|
+<f53> 53|
+<f54> 54|
+<f55> 55|
+<f56> 56|
+<f57> 57|
+<f58> 58|
+<f59> 59|
+<f60> 60|
+<f61> 61|
+<f62> 62|
+<f63> 63|
+<f64> 64|
+<f65> 65|
+<f66> 66|
+<f67> 67|
+<f68> 68|
+<f69> 69|
+<f70> 70|
+<f71> 71|
+<f72> 72|
+<f73> 73|
+<f74> 74|
+<f75> 75|
+<f76> 76|
+<f77> 77|
+<f78> 78|
+<f79> 79|
+<f80> 80|
+<f81> 81|
+<f82> 82|
+<f83> 83|
+<f84> 84|
+<f85> 85|
+<f86> 86|
+<f87> 87|
+<f88> 88|
+<f89> 89|
+<f90> 90|
+<f91> 91|
+<f92> 92|
+<f93> 93|
+<f94> 94|
+<f95> 95|
+<f96> 96|
+<f97> 97|
+<f98> 98|
+<f99> 99|
+<f100> 100|
+<f101> 101|
+<f102> 102|
+<f103> 103|
+<f104> 104|
+<f105> 105|
+<f106> 106|
+<f107> 107|
+<f108> 108|
+<f109> 109|
+<f110> 110|
+<f111> 111|
+<f112> 112|
+<f113> 113|
+<f114> 114|
+<f115> 115|
+<f116> 116|
+<f117> 117|
+<f118> 118|
+<f119> 119|
+<f120> 120|
+<f121> 121|
+<f122> 122|
+<f123> 123",height=62.0, width=.8];
+nodeNone0 [shape=plaintext, label="None", width=0.5]
+vector:f0 -> nodeNone0
+nodeNone1 [shape=plaintext, label="None", width=0.5]
+vector:f1 -> nodeNone1
+node4yWelmann3[label = "{<n> 4yWelmann3| <p> }"];
+vector:f2 -> node4yWelmann3:n;
+nodeNone3 [shape=plaintext, label="None", width=0.5]
+vector:f3 -> nodeNone3
+node5yWelmann4[label = "{<n> 5yWelmann4| <p> }"];
+vector:f4 -> node5yWelmann4:n;
+node12343yWelmann41[label = "{<n> 12343yWelmann41| <p> }"];
+node10430yWelmann91[label = "{<n> 10430yWelmann91| <p> }"];
+vector:f5 -> node12343yWelmann41:n;
+node12343yWelmann41:p -> node10430yWelmann91:n;
+node6yWelmann5[label = "{<n> 6yWelmann5| <p> }"];
+vector:f6 -> node6yWelmann5:n;
+node14324yWelmann51[label = "{<n> 14324yWelmann51| <p> }"];
+vector:f7 -> node14324yWelmann51:n;
+node53yPrimer53[label = "{<n> 53yPrimer53| <p> }"];
+vector:f8 -> node53yPrimer53:n;
+nodeNone9 [shape=plaintext, label="None", width=0.5]
+vector:f9 -> nodeNone9
+node8yWelmann7[label = "{<n> 8yWelmann7| <p> }"];
+vector:f10 -> node8yWelmann7:n;
+node13246yWelmann71[label = "{<n> 13246yWelmann71| <p> }"];
+vector:f11 -> node13246yWelmann71:n;
+node9yWelmann8[label = "{<n> 9yWelmann8| <p> }"];
+vector:f12 -> node9yWelmann8:n;
+node14327yWelmann81[label = "{<n> 14327yWelmann81| <p> }"];
+vector:f13 -> node14327yWelmann81:n;
+node65yPrimer65[label = "{<n> 65yPrimer65| <p> }"];
+node13238yWelmann91[label = "{<n> 13238yWelmann91| <p> }"];
+vector:f14 -> node65yPrimer65:n;
+node65yPrimer65:p -> node13238yWelmann91:n;
+nodeNone15 [shape=plaintext, label="None", width=0.5]
+vector:f15 -> nodeNone15
+nodeNone16 [shape=plaintext, label="None", width=0.5]
+vector:f16 -> nodeNone16
+node53342yunico53342[label = "{<n> 53342yunico53342| <p> }"];
+vector:f17 -> node53342yunico53342:n;
+nodeNone18 [shape=plaintext, label="None", width=0.5]
+vector:f18 -> nodeNone18
+nodeNone19 [shape=plaintext, label="None", width=0.5]
+vector:f19 -> nodeNone19
+nodeNone20 [shape=plaintext, label="None", width=0.5]
+vector:f20 -> nodeNone20
+nodeNone21 [shape=plaintext, label="None", width=0.5]
+vector:f21 -> nodeNone21
+nodeNone22 [shape=plaintext, label="None", width=0.5]
+vector:f22 -> nodeNone22
+nodeNone23 [shape=plaintext, label="None", width=0.5]
+vector:f23 -> nodeNone23
+nodeNone24 [shape=plaintext, label="None", width=0.5]
+vector:f24 -> nodeNone24
+nodeNone25 [shape=plaintext, label="None", width=0.5]
+vector:f25 -> nodeNone25
+node100yWelmann91[label = "{<n> 100yWelmann91| <p> }"];
+vector:f26 -> node100yWelmann91:n;
+nodeNone27 [shape=plaintext, label="None", width=0.5]
+vector:f27 -> nodeNone27
+node120yWelmann91[label = "{<n> 120yWelmann91| <p> }"];
+vector:f28 -> node120yWelmann91:n;
+nodeNone29 [shape=plaintext, label="None", width=0.5]
+vector:f29 -> nodeNone29
+nodeNone30 [shape=plaintext, label="None", width=0.5]
+vector:f30 -> nodeNone30
+nodeNone31 [shape=plaintext, label="None", width=0.5]
+vector:f31 -> nodeNone31
+nodeNone32 [shape=plaintext, label="None", width=0.5]
+vector:f32 -> nodeNone32
+nodeNone33 [shape=plaintext, label="None", width=0.5]
+vector:f33 -> nodeNone33
+nodeNone34 [shape=plaintext, label="None", width=0.5]
+vector:f34 -> nodeNone34
+nodeNone35 [shape=plaintext, label="None", width=0.5]
+vector:f35 -> nodeNone35
+nodeNone36 [shape=plaintext, label="None", width=0.5]
+vector:f36 -> nodeNone36
+node138yWelmann91[label = "{<n> 138yWelmann91| <p> }"];
+vector:f37 -> node138yWelmann91:n;
+nodeNone38 [shape=plaintext, label="None", width=0.5]
+vector:f38 -> nodeNone38
+node545yWelmann91[label = "{<n> 545yWelmann91| <p> }"];
+vector:f39 -> node545yWelmann91:n;
+nodeNone40 [shape=plaintext, label="None", width=0.5]
+vector:f40 -> nodeNone40
+nodeNone41 [shape=plaintext, label="None", width=0.5]
+vector:f41 -> nodeNone41
+nodeNone42 [shape=plaintext, label="None", width=0.5]
+vector:f42 -> nodeNone42
+nodeNone43 [shape=plaintext, label="None", width=0.5]
+vector:f43 -> nodeNone43
+nodeNone44 [shape=plaintext, label="None", width=0.5]
+vector:f44 -> nodeNone44
+nodeNone45 [shape=plaintext, label="None", width=0.5]
+vector:f45 -> nodeNone45
+nodeNone46 [shape=plaintext, label="None", width=0.5]
+vector:f46 -> nodeNone46
+nodeNone47 [shape=plaintext, label="None", width=0.5]
+vector:f47 -> nodeNone47
+nodeNone48 [shape=plaintext, label="None", width=0.5]
+vector:f48 -> nodeNone48
+nodeNone49 [shape=plaintext, label="None", width=0.5]
+vector:f49 -> nodeNone49
+nodeNone50 [shape=plaintext, label="None", width=0.5]
+vector:f50 -> nodeNone50
+nodeNone51 [shape=plaintext, label="None", width=0.5]
+vector:f51 -> nodeNone51
+nodeNone52 [shape=plaintext, label="None", width=0.5]
+vector:f52 -> nodeNone52
+node10yWelmann9[label = "{<n> 10yWelmann9| <p> }"];
+vector:f53 -> node10yWelmann9:n;
+nodeNone54 [shape=plaintext, label="None", width=0.5]
+vector:f54 -> nodeNone54
+nodeNone55 [shape=plaintext, label="None", width=0.5]
+vector:f55 -> nodeNone55
+nodeNone56 [shape=plaintext, label="None", width=0.5]
+vector:f56 -> nodeNone56
+node50yWelmann9[label = "{<n> 50yWelmann9| <p> }"];
+vector:f57 -> node50yWelmann9:n;
+nodeNone58 [shape=plaintext, label="None", width=0.5]
+vector:f58 -> nodeNone58
+nodeNone59 [shape=plaintext, label="None", width=0.5]
+vector:f59 -> nodeNone59
+nodeNone60 [shape=plaintext, label="None", width=0.5]
+vector:f60 -> nodeNone60
+node143245yWelmann61[label = "{<n> 143245yWelmann61| <p> }"];
+vector:f61 -> node143245yWelmann61:n;
+nodeNone62 [shape=plaintext, label="None", width=0.5]
+vector:f62 -> nodeNone62
+nodeNone63 [shape=plaintext, label="None", width=0.5]
+vector:f63 -> nodeNone63
+nodeNone64 [shape=plaintext, label="None", width=0.5]
+vector:f64 -> nodeNone64
+nodeNone65 [shape=plaintext, label="None", width=0.5]
+vector:f65 -> nodeNone65
+nodeNone66 [shape=plaintext, label="None", width=0.5]
+vector:f66 -> nodeNone66
+nodeNone67 [shape=plaintext, label="None", width=0.5]
+vector:f67 -> nodeNone67
+nodeNone68 [shape=plaintext, label="None", width=0.5]
+vector:f68 -> nodeNone68
+nodeNone69 [shape=plaintext, label="None", width=0.5]
+vector:f69 -> nodeNone69
+nodeNone70 [shape=plaintext, label="None", width=0.5]
+vector:f70 -> nodeNone70
+nodeNone71 [shape=plaintext, label="None", width=0.5]
+vector:f71 -> nodeNone71
+node1yWelmann[label = "{<n> 1yWelmann| <p> }"];
+vector:f72 -> node1yWelmann:n;
+nodeNone73 [shape=plaintext, label="None", width=0.5]
+vector:f73 -> nodeNone73
+nodeNone74 [shape=plaintext, label="None", width=0.5]
+vector:f74 -> nodeNone74
+nodeNone75 [shape=plaintext, label="None", width=0.5]
+vector:f75 -> nodeNone75
+nodeNone76 [shape=plaintext, label="None", width=0.5]
+vector:f76 -> nodeNone76
+nodeNone77 [shape=plaintext, label="None", width=0.5]
+vector:f77 -> nodeNone77
+node1243yWelmann41[label = "{<n> 1243yWelmann41| <p> }"];
+vector:f78 -> node1243yWelmann41:n;
+nodeNone79 [shape=plaintext, label="None", width=0.5]
+vector:f79 -> nodeNone79
+nodeNone80 [shape=plaintext, label="None", width=0.5]
+vector:f80 -> nodeNone80
+node1043yWelmann91[label = "{<n> 1043yWelmann91| <p> }"];
+vector:f81 -> node1043yWelmann91:n;
+node4324yWelmann51[label = "{<n> 4324yWelmann51| <p> }"];
+node1432yWelmann81[label = "{<n> 1432yWelmann81| <p> }"];
+vector:f82 -> node4324yWelmann51:n;
+node4324yWelmann51:p -> node1432yWelmann81:n;
+node5334yWelmann41[label = "{<n> 5334yWelmann41| <p> }"];
+vector:f83 -> node5334yWelmann41:n;
+nodeNone84 [shape=plaintext, label="None", width=0.5]
+vector:f84 -> nodeNone84
+node1346yWelmann71[label = "{<n> 1346yWelmann71| <p> }"];
+vector:f85 -> node1346yWelmann71:n;
+nodeNone86 [shape=plaintext, label="None", width=0.5]
+vector:f86 -> nodeNone86
+node53430yWelmann9[label = "{<n> 53430yWelmann9| <p> }"];
+vector:f87 -> node53430yWelmann9:n;
+nodeNone88 [shape=plaintext, label="None", width=0.5]
+vector:f88 -> nodeNone88
+nodeNone89 [shape=plaintext, label="None", width=0.5]
+vector:f89 -> nodeNone89
+node5345yWelmann91[label = "{<n> 5345yWelmann91| <p> }"];
+vector:f90 -> node5345yWelmann91:n;
+nodeNone91 [shape=plaintext, label="None", width=0.5]
+vector:f91 -> nodeNone91
+nodeNone92 [shape=plaintext, label="None", width=0.5]
+vector:f92 -> nodeNone92
+nodeNone93 [shape=plaintext, label="None", width=0.5]
+vector:f93 -> nodeNone93
+node11yWelmann10[label = "{<n> 11yWelmann10| <p> }"];
+vector:f94 -> node11yWelmann10:n;
+nodeNone95 [shape=plaintext, label="None", width=0.5]
+vector:f95 -> nodeNone95
+nodeNone96 [shape=plaintext, label="None", width=0.5]
+vector:f96 -> nodeNone96
+node12yWelmann21[label = "{<n> 12yWelmann21| <p> }"];
+vector:f97 -> node12yWelmann21:n;
+node51yWelmann10[label = "{<n> 51yWelmann10| <p> }"];
+vector:f98 -> node51yWelmann10:n;
+nodeNone99 [shape=plaintext, label="None", width=0.5]
+vector:f99 -> nodeNone99
+node13yWelmann41[label = "{<n> 13yWelmann41| <p> }"];
+vector:f100 -> node13yWelmann41:n;
+node3yunico3[label = "{<n> 3yunico3| <p> }"];
+node52yWelmann21[label = "{<n> 52yWelmann21| <p> }"];
+vector:f101 -> node3yunico3:n;
+node3yunico3:p -> node52yWelmann21:n;
+node14yWelmann51[label = "{<n> 14yWelmann51| <p> }"];
+vector:f102 -> node14yWelmann51:n;
+nodeNone103 [shape=plaintext, label="None", width=0.5]
+vector:f103 -> nodeNone103
+node15yWelmann61[label = "{<n> 15yWelmann61| <p> }"];
+vector:f104 -> node15yWelmann61:n;
+nodeNone105 [shape=plaintext, label="None", width=0.5]
+vector:f105 -> nodeNone105
+node54yWelmann51[label = "{<n> 54yWelmann51| <p> }"];
+node16yWelmann71[label = "{<n> 16yWelmann71| <p> }"];
+vector:f106 -> node54yWelmann51:n;
+node54yWelmann51:p -> node16yWelmann71:n;
+nodeNone107 [shape=plaintext, label="None", width=0.5]
+vector:f107 -> nodeNone107
+node17yWelmann81[label = "{<n> 17yWelmann81| <p> }"];
+node530yWelmann9[label = "{<n> 530yWelmann9| <p> }"];
+vector:f108 -> node17yWelmann81:n;
+node17yWelmann81:p -> node530yWelmann9:n;
+nodeNone109 [shape=plaintext, label="None", width=0.5]
+vector:f109 -> nodeNone109
+node56yWelmann71[label = "{<n> 56yWelmann71| <p> }"];
+node18yWelmann91[label = "{<n> 18yWelmann91| <p> }"];
+vector:f110 -> node56yWelmann71:n;
+node56yWelmann71:p -> node18yWelmann91:n;
+node55yWelmann91[label = "{<n> 55yWelmann91| <p> }"];
+vector:f111 -> node55yWelmann91:n;
+node95yWelmann61[label = "{<n> 95yWelmann61| <p> }"];
+node57yWelmann81[label = "{<n> 57yWelmann81| <p> }"];
+vector:f112 -> node95yWelmann61:n;
+node95yWelmann61:p -> node57yWelmann81:n;
+nodeNone113 [shape=plaintext, label="None", width=0.5]
+vector:f113 -> nodeNone113
+node58yWelmann91[label = "{<n> 58yWelmann91| <p> }"];
+vector:f114 -> node58yWelmann91:n;
+nodeNone115 [shape=plaintext, label="None", width=0.5]
+vector:f115 -> nodeNone115
+nodeNone116 [shape=plaintext, label="None", width=0.5]
+vector:f116 -> nodeNone116
+nodeNone117 [shape=plaintext, label="None", width=0.5]
+vector:f117 -> nodeNone117
+nodeNone118 [shape=plaintext, label="None", width=0.5]
+vector:f118 -> nodeNone118
+nodeNone119 [shape=plaintext, label="None", width=0.5]
+vector:f119 -> nodeNone119
+nodeNone120 [shape=plaintext, label="None", width=0.5]
+vector:f120 -> nodeNone120
+nodeNone121 [shape=plaintext, label="None", width=0.5]
+vector:f121 -> nodeNone121
+node2yWelmann1[label = "{<n> 2yWelmann1| <p> }"];
+vector:f122 -> node2yWelmann1:n;
+nodeNone123 [shape=plaintext, label="None", width=0.5]
+vector:f123 -> nodeNone123
+ }
