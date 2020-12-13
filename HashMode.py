@@ -3,19 +3,18 @@ import os
 import re
 
 storage = Storage.ListaBaseDatos()
-main_path = os.getcwd()+"\\data"
+main_path = os.getcwd()+"\\data\\hash"
 db_name_pattern = "^[a-zA-Z_].*"
+
 
 # Cambiar la ubicación del directorio data (por defecto se usará el directorio de consola)
 
-
-def setDir(newPath: str):
+def setDir(newPath: str) -> int:
 
     global main_path
     temp_path = newPath+"\\data"
 
     try:
-
         if os.path.isdir(newPath):
 
             if not os.path.isdir(temp_path):
@@ -25,143 +24,175 @@ def setDir(newPath: str):
             Storage.main_path = temp_path
 
             __init__()
+
+            return 0
         
         else:
-            print("'"+newPath+"' no es un directorio valido")
+            return 1
 
-    except os.error:
-        print(os.error)
+    except:
+        return 1
+
+
+# ==//== inicialización del sistema de directorios ==//==
+
+def __init__():
+
+    if not os.path.isdir(os.getcwd()+"\\data"):
+        os.mkdir(os.getcwd()+"\\data")
+
+    if not os.path.isdir(os.getcwd()+"\\data\\hash"):
+        os.mkdir(os.getcwd()+"\\data\\hash")
+
+        
+    for db in os.listdir(main_path):
+        storage.createDatabase(db)
+
+    #print(">> Se cargaron:")
+    #showDatabases()
+
+__init__()
 
 # ==//== funciones con respecto a ListaBaseDatos ==//==
 # Se llama la función sobre la clase ListaBaseDatos
 
+def createDatabase(database: str) -> int:
 
-def createDatabase(mode: int, databaseName: str):
-
-    if re.search(db_name_pattern, databaseName):
-
-        if mode in range(1, 6):
-            return storage.createDatabase(5, databaseName)
-
-        else:
-            return 3
+    if re.search(db_name_pattern, database):
+        return storage.createDatabase(database)
 
     else:
-        return 2
+        return 1
 
 
-def showDatabases():
+def showDatabases() -> list:
 
     return storage.showDatabases()
 
 
-def alterDatabase(databaseOld: str, databaseNew: str):
+def alterDatabase(databaseOld: str, databaseNew: str) -> int:
 
     if re.search(db_name_pattern, databaseOld) and re.search(db_name_pattern, databaseNew):
         return storage.alterDatabase(databaseOld, databaseNew)
 
     else:
-        return False
-
-
-def dropDatabase(databaseName: str):
-
-    if databaseName:
-        return storage.dropDatabase(databaseName)
-
-    else:
-        print("Se necesita un nombre para la base de datos")
         return 1
+
+
+def dropDatabase(database: str) -> int:
+
+    return storage.dropDatabase(database)
 
 
 # ==//== funciones con respecto a BaseDatos ==//==
 # Primero se busca la base de datos y luego se llama la función sobre la clase BaseDatos
 
-def createTable(databaseName, tableName, numberColumns):
+def createTable(database:str, table:str, numberColumns:list) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
-        return temp.createTable(tableName, numberColumns)
+        return temp.createTable(table, numberColumns)
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def showTables(databaseName):
+def definePK(database:str, table:str, columns:list) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.definePK(table, qcolumns)
+
+    else:
+        return 2
+
+
+def defineFK(database:str, table:str, references:dict) -> int:
+
+    #codigo en proceso (FASE 2)
+    pass
+
+
+def showTables(database:str) -> list:
+
+    temp = storage.Buscar(database)
 
     if temp:
         return temp.showTables()
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return None
 
 
-def alterTable(databaseName, tableOld, tableNew):
+def alterTable(database:str, tableOld:str, tableNew:str) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
         return temp.alterTable(tableOld, tableNew)
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def dropTable(databaseName, tableName):
+def dropTable(database:str, table:str) -> int:
 
-    temp = storage.Buscar(databaseName)
-
-    if temp:
-        return temp.dropTable(tableName)
-
-    else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
-
-
-def alterAdd(databaseName, tableName, columnName):
-
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
-        return temp.alterAdd(tableName, columnName)
+        return temp.dropTable(table)
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def alterDrop(databaseName, tableName, columnName):
+def alterAddColumn(database:str, table:str) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
-        return temp.alterDrop(tableName, columnName)
+        return temp.alterAddColumn(table)
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-def extractTable(databaseName, tableName):
+def alterDropColumn(database:str, table:str, columnNumber:int) -> int:
 
-    temp = storage.Buscar(databaseName)
+    temp = storage.Buscar(database)
 
     if temp:
-        return temp.extractTable(tableName)
+        return temp.alterDrop(table, columnNumber)
 
     else:
-        print("Base de datos '"+databaseName+"' no encontrada")
-        return 1
+        return 2
 
 
-# ==//== funciones con respecto a Tabla ==//==
+def extractTable(database:str, table:str) -> list:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.extractTable(table)
+
+    else:
+        return None
+
+
+def extractRangeTable(database:str, table:str, lower:any, upper:any) -> list:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.extractTable(table)
+
+    else:
+        return None
+
+
+# ==//== funciones con respecto a Tabla ==//== (susceptible a cambios)
 # Primero se busca la base de datos, luego la tabla, y luego se llama la función sobre la clase Tabla
 
 def insert(databaseName, tableName, columns):
@@ -296,22 +327,3 @@ def loadCSV(filecsv, databaseName, tableName, numberColumns):
     print(header)
     print(registros)
     return 0
-
-
-# ==//== inicialización del sistema de directorios ==//==
-
-def __init__():
-
-    if os.path.isdir(main_path):
-
-        for db in os.listdir(main_path):
-            storage.createDatabase(5, db)
-
-    else:
-        os.mkdir(main_path)
-
-    #print(">> Se cargaron:")
-    showDatabases()
-
-
-__init__()
