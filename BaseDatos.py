@@ -18,12 +18,13 @@ class BaseDatos:
     # == BUSCAR TABLA
     def Buscar(self, table):
         existe = False
-        i = 0
+        i = -1
         if table in self.list_table:
             existe = True
+            i=self.list_table.index(table)
         else:
             existe = False
-            i = i+1
+            
         salida = [existe, i]
         return salida
 
@@ -31,54 +32,43 @@ class BaseDatos:
     # == CREAR TABLAS
     def createTable(self, tableName, numberColumns):
         if not tableName in self.list_table:
-            
-            if re.search(table_name_pattern, table_name_pattern):
+            if re.search(table_name_pattern, tableName):
                 self.list_table.append(tableName)
                 temp = Tabla.Tabla(tableName, numberColumns)
                 serealizar.commit(temp, tableName, self.main_path)
-
                 return 0
-
             else:
                 return 1
-
         else:
             return 3
 
+    # == LLAVES PRIMARIAS Y FORÁNEAS    
     def alterAddPK(self, table, columns):
         if table in self.list_table:
-           if len(columns) == 0:
-               return 1
+            if len(columns) == 0:
+                return 1
             else:    
                 temp = serealizar.rollback(table, self.main_path)
-                os.remove(self.main_path+"\\"+table+".bin")
-                temp.alterAddPK(columns)
+                
+                var = temp.alterAddPK(columns)
                 serealizar.commit(temp, table, self.main_path)
-                return 0
+                return var
         else:
             return 3
-        
 
     def alterDropPK(self, table):
         if table in self.list_table:
-            temp = serealizar.rollback(table, self.main_path)
-            os.remove(self.main_path+"\\"+table+".bin")
-            temp.alterDropPK()
-            serealizar.commit(temp, table, self.main_path)
-            return 0    
+           temp = serealizar.rollback(table, self.main_path)
+           
+           var = temp.alterDropPK()
+           serealizar.commit(temp, table, self.main_path)
+           return var
         else: 
-            return 3    
-        pass
-
-    # == CREAR LLAVES PRIMARIAS Y FORÁNEAS                
-    def definePK(self, table, columns):
-        # codigo para cambiar la lista de PK de una tabla dada
-        return 0 #operacion exitosa
+           return 3    
 
     def defineFK(self):
         #codigo en proceso (FASE 2)
         pass
-
 
     # == MOSTRAR TABLAS
     def showTables(self):
@@ -157,7 +147,6 @@ class BaseDatos:
         file.write("digraph grafica{" + os.linesep)
         file.write("rankdir=LR;" + os.linesep)
         info = "{"
-        #info = "<<table><tr>"
         j = 0
         for i in self.list_table:
             if j == 0:
@@ -165,24 +154,8 @@ class BaseDatos:
             else:
                 info += "|"+i+ os.linesep
             j = j+1
-         #   info += "<td>"+i+"</td>"
-        #info += "</tr></table>>"
         file.write('tabla[shape=record label="'+info+'}"];')
         file.write(' }' + os.linesep)
         file.close()
         os.system('dot -Tpng tablas.dot -o tablas.png')
         os.system('tablas.png')
-    
-    
-
-
-B = BaseDatos('Alejandra', 'r')
-B.list_table.append('Tabla1')
-B.list_table.append('Tabla2')
-B.list_table.append('Tabla3')
-B.list_table.append('Tabla4')
-B.list_table.append('Tabla20')
-B.list_table.append('Tabla30')
-B.list_table.append('Tabla40')
-B.graficar()
-
