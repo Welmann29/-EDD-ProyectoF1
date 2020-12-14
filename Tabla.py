@@ -1,7 +1,5 @@
 import os
 import subprocess
-import time
-import random
 
 
 class Nodo(object):
@@ -238,7 +236,7 @@ class Tabla(object):
             nodo = self.BuscandoNodoToAscii(casilla, primaria)
 
         if type(nodo) == bool:
-            return 1
+            return 4
         else:
             return nodo.datos
 
@@ -427,8 +425,17 @@ class Tabla(object):
 
     def alterDropColumn(self, numero):
         try:
-            if numero >= self.columnas:
+            if self.columnas == 1:
                 return 4
+            if numero in self.PK:
+                return 4
+            if numero >= self.columnas:
+                return 5
+            count = 0
+            for i in self.PK:
+                if i > numero:
+                    self.PK[count] -= 1
+                count += 1
             for i in self.vector:
                 if i is None:
                     '''No hace nada'''
@@ -501,6 +508,10 @@ class Tabla(object):
             lower = lower[0]
             upper = upper[0]
 
+        if self.tipoPrimaria == 'str':
+            lower = str(lower)
+            upper = str(upper)
+
         lista = []
         for i in self.vector:
             if i is None:
@@ -525,7 +536,7 @@ class Tabla(object):
 tabla = Tabla('Integrantes', 2)
 tabla.alterAddPK([0])
 tabla2 = Tabla('Integrantes2', 3)
-tabla2.alterAddPK([0])
+tabla2.alterAddPK([1])
 
 tabla2.insertar(['aa', 'Dato1', 45])
 tabla2.insertar(['aa', 'Dato1 Repetido', 8])
@@ -553,6 +564,7 @@ print(tabla2.alterAddColumn())
 print()
 tabla2.imprimir()
 print(tabla2.alterDropColumn(5))
+print(tabla2.alterDropColumn(0))
 print(tabla2.alterDropColumn(3))
 tabla2.imprimir()
 
