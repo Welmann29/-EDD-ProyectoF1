@@ -214,31 +214,34 @@ class Tabla(object):
     '''
 
     def ExtraerTupla(self, primaria):
-        if len(primaria) > 1:
-            primaria = self.UnirLlave(primaria)
-        else:
-            primaria = primaria[0]
-        if self.tipoPrimaria == 'int':
-            if type(primaria) is str:
-                return 1
-            indice = self.funcionHash(primaria)
-            casilla = self.vector[indice]
-            if casilla is None:
-                return 4  # Llave primaria no existe
-            nodo = self.BusquedaBinariaDevlviendoNodo(casilla, primaria)
-        else:
-            if type(primaria) is int:
-                return 1
-            indice = self.funcionHash(primaria)
-            casilla = self.vector[indice]
-            if casilla is None:
-                return 4  # Llave primaria no existe
-            nodo = self.BuscandoNodoToAscii(casilla, primaria)
+        try:
+            if len(primaria) > 1:
+                primaria = self.UnirLlave(primaria)
+            else:
+                primaria = primaria[0]
+            if self.tipoPrimaria == 'int':
+                if type(primaria) is str:
+                    return 1
+                indice = self.funcionHash(primaria)
+                casilla = self.vector[indice]
+                if casilla is None:
+                    return 4  # Llave primaria no existe
+                nodo = self.BusquedaBinariaDevlviendoNodo(casilla, primaria)
+            else:
+                if type(primaria) is int:
+                    return 1
+                indice = self.funcionHash(primaria)
+                casilla = self.vector[indice]
+                if casilla is None:
+                    return 4  # Llave primaria no existe
+                nodo = self.BuscandoNodoToAscii(casilla, primaria)
 
-        if type(nodo) == bool:
-            return 4
-        else:
-            return nodo.datos
+            if type(nodo) == bool:
+                return 4
+            else:
+                return nodo.datos
+        except:
+            return 1
 
     '''
     Truncate, metodo para vaciar la tabla totalmente 
@@ -262,28 +265,31 @@ class Tabla(object):
     '''
 
     def deleteTable(self, primaria):
-        if len(primaria) > 1:
-            primaria = self.UnirLlave(primaria)
-        else:
-            primaria = primaria[0]
-        if (type(primaria) is str) or (type(primaria) is int):
-            indice = self.funcionHash(primaria)
-            if self.vector[indice] is None:
-                return 4
-            elif len(self.vector[indice]) == 1:
-                if self.vector[indice][0].primaria == primaria:
-                    self.vector[indice] = None
-                    self.elementos -= 1
-                    return 0
-                else:
-                    return 4
-            nuevo = self._delete(self.vector[indice], primaria)
-            if type(nuevo) == bool:
-                return 4
+        try:
+            if len(primaria) > 1:
+                primaria = self.UnirLlave(primaria)
             else:
-                self.vector[indice] = nuevo
-                return 0
-        else:
+                primaria = primaria[0]
+            if (type(primaria) is str) or (type(primaria) is int):
+                indice = self.funcionHash(primaria)
+                if self.vector[indice] is None:
+                    return 4
+                elif len(self.vector[indice]) == 1:
+                    if self.vector[indice][0].primaria == primaria:
+                        self.vector[indice] = None
+                        self.elementos -= 1
+                        return 0
+                    else:
+                        return 4
+                nuevo = self._delete(self.vector[indice], primaria)
+                if type(nuevo) == bool:
+                    return 4
+                else:
+                    self.vector[indice] = nuevo
+                    return 0
+            else:
+                return 1
+        except:
             return 1
 
     def _delete(self, lista, primaria):
@@ -431,11 +437,13 @@ class Tabla(object):
                 return 4
             if numero >= self.columnas:
                 return 5
-            count = 0
-            for i in self.PK:
-                if i > numero:
-                    self.PK[count] -= 1
-                count += 1
+            if not (self.PK is None):
+                count = 0
+                for i in self.PK:
+                    if i > numero:
+                        self.PK[count] -= 1
+                    count += 1
+
             for i in self.vector:
                 if i is None:
                     '''No hace nada'''
@@ -501,36 +509,39 @@ class Tabla(object):
         return combinada
 
     def extractRangeTable(self, lower, upper):
-        if len(lower) > 1:
-            lower = self.UnirLlave(lower)
-            upper = self.UnirLlave(upper)
-        else:
-            lower = lower[0]
-            upper = upper[0]
-
-        if self.tipoPrimaria == 'str':
-            lower = str(lower)
-            upper = str(upper)
-
-        lista = []
-        for i in self.vector:
-            if i is None:
-                '''No hace nada'''
+        try:
+            if len(lower) > 1:
+                lower = self.UnirLlave(lower)
+                upper = self.UnirLlave(upper)
             else:
-                for j in i:
-                    lista.append(j)
+                lower = lower[0]
+                upper = upper[0]
 
-        listaRetorno = []
-        if self.tipoPrimaria == 'int':
-            for nodo in lista:
-                if lower <= nodo.primaria <= upper:
-                    listaRetorno.append(nodo.datos)
-        else:
-            for nodo in lista:
-                if self.toASCII(lower) <= self.toASCII(nodo.primaria) <= self.toASCII(upper):
-                    listaRetorno.append(nodo.datos)
+            if self.tipoPrimaria == 'str':
+                lower = str(lower)
+                upper = str(upper)
 
-        return listaRetorno
+            lista = []
+            for i in self.vector:
+                if i is None:
+                    '''No hace nada'''
+                else:
+                    for j in i:
+                        lista.append(j)
+
+            listaRetorno = []
+            if self.tipoPrimaria == 'int':
+                for nodo in lista:
+                    if lower <= nodo.primaria <= upper:
+                        listaRetorno.append(nodo.datos)
+            else:
+                for nodo in lista:
+                    if self.toASCII(lower) <= self.toASCII(nodo.primaria) <= self.toASCII(upper):
+                        listaRetorno.append(nodo.datos)
+
+            return listaRetorno
+        except:
+            return []
 
 
 tabla = Tabla('Integrantes', 2)
