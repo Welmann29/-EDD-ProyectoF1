@@ -45,11 +45,10 @@ def __init__():
 
     if not os.path.isdir(os.getcwd()+"\\data\\hash"):
         os.mkdir(os.getcwd()+"\\data\\hash")
-
         
     for db in os.listdir(main_path):
         storage.createDatabase(db)
-
+        
 __init__()
 
 # ==//== funciones con respecto a ListaBaseDatos ==//==
@@ -86,7 +85,7 @@ def dropDatabase(database: str) -> int:
 # ==//== funciones con respecto a BaseDatos ==//==
 # Primero se busca la base de datos y luego se llama la función sobre la clase BaseDatos
 
-def createTable(database:str, table:str, numberColumns:int) -> int:
+def createTable(database: str, table: str, numberColumns: int) -> int:
 
     temp = storage.Buscar(database)
 
@@ -97,35 +96,7 @@ def createTable(database:str, table:str, numberColumns:int) -> int:
         return 2
 
 
-def alterAddPK(database:str, table:str, columns:list) -> int:
-
-    temp = storage.Buscar(database)
-
-    if temp:
-        return temp.alterAddPK(table, columns)
-
-    else:
-        return 2
-
-
-def alterDropPK(database:str, table:str, columns:list) -> int:
-
-    temp = storage.Buscar(database)
-
-    if temp:
-        return temp.alterDropPK(table, columns)
-        
-    else:
-        return 2
-
-
-def defineFK(database:str, table:str, references:dict) -> int:
-
-    #codigo en proceso (FASE 2)
-    pass
-
-
-def showTables(database:str) -> list:
+def showTables(database: str) -> list:
 
     temp = storage.Buscar(database)
 
@@ -136,23 +107,68 @@ def showTables(database:str) -> list:
         return None
 
 
-def alterTable(database:str, tableOld:str, tableNew:str) -> int:
+def extractTable(database: str, table: str) -> list:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.alterTable(tableOld, tableNew)
+        return temp.extractTable(table)
+
+    else:
+        return None
+
+
+def extractRangeTable(database: str, table: str, lower: any, upper: any) -> list:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.extractRangeTable(table, lower, upper)
+
+    else:
+        return None
+
+
+def alterAddPK(database: str, table: str, columns: list) -> int:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.alterAddPK(table, columns)
 
     else:
         return 2
 
 
-def dropTable(database:str, table:str) -> int:
+def alterDropPK(database: str, table: str, columns: list) -> int:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.dropTable(table)
+        return temp.alterDropPK(table, columns)
+        
+    else:
+        return 2
+
+
+def alterAddFK(database: str, table: str, references: dict) -> int:
+
+    #codigo en proceso (FASE 2)
+    pass
+
+
+def alterAddIndex(database: str, table: str, references: dict) -> int:
+
+    #codigo en proceso (FASE 2)
+    pass
+
+
+def alterTable(database: str, tableOld: str, tableNew: str) -> int:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+        return temp.alterTable(tableOld, tableNew)
 
     else:
         return 2
@@ -169,7 +185,7 @@ def alterAddColumn(database:str, table:str) -> int:
         return 2
 
 
-def alterDropColumn(database:str, table:str, columnNumber:int) -> int:
+def alterDropColumn(database: str, table: str, columnNumber: int) -> int:
 
     temp = storage.Buscar(database)
 
@@ -180,32 +196,21 @@ def alterDropColumn(database:str, table:str, columnNumber:int) -> int:
         return 2
 
 
-def extractTable(database:str, table:str) -> list:
+def dropTable(database: str, table: str) -> int:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.extractTable(table)
+        return temp.dropTable(table)
 
     else:
-        return None
-
-
-def extractRangeTable(database:str, table:str, lower:any, upper:any) -> list:
-
-    temp = storage.Buscar(database)
-
-    if temp:
-        return temp.extractRangeTable(table,lower,upper)
-
-    else:
-        return None
+        return 2
 
 
 # ==//== funciones con respecto a Tabla ==//==
 # Primero se busca la base de datos, luego la tabla, y luego se llama la función sobre la clase Tabla
 
-def insert(database:str, table:str, register:list) -> int:
+def insert(database: str, table: str, register: list) -> int:
 
     temp = storage.Buscar(database)
 
@@ -229,7 +234,70 @@ def insert(database:str, table:str, register:list) -> int:
         return 2
 
 
-def update(database:str, table:str, register:dict, columns:list) -> int:
+def loadCSV(file: str, database: str, table: str) -> int:
+
+    try:
+        archivo = open(file)
+
+    except:
+        return 1
+
+    temp = storage.Buscar(database)
+
+    if temp:
+
+        b = temp.Buscar(table)        
+        nombre = temp.list_table[b[1]]
+        
+        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
+
+        if b[0]:
+            
+            temp_registros = archivo.readlines()
+
+            registros = []
+
+            for registro in temp_registros:                
+                registros.append(registro.replace("\n", "").split(","))
+
+            for registro in registros:
+                
+                valor = tabla.insertar(registro)
+
+                if valor:
+                    serealizar.commit(tabla, table, main_path+"\\"+database)
+                    return valor
+
+            else:
+                serealizar.commit(tabla, table, main_path+"\\"+database)
+                return 0
+
+        else:
+            return 3
+
+    else:
+        return 2
+        
+
+def extractRow(database: str, table: str, columns: list) -> int:
+
+    temp = storage.Buscar(database)
+
+    if temp:
+
+        temp = temp.Buscar(table)
+
+        if temp:
+            return temp.extractRow(columns)
+
+        else:
+            return 3
+
+    else:
+        return 2
+
+
+def update(database: str, table: str, register: dict, columns: list) -> int:
 
     temp = storage.Buscar(database)
 
@@ -253,7 +321,7 @@ def update(database:str, table:str, register:dict, columns:list) -> int:
         return 2
 
 
-def delete(database:str, table:str, columns:list) -> int:
+def delete(database: str, table: str, columns: list) -> int:
 
     temp = storage.Buscar(database)
 
@@ -277,7 +345,7 @@ def delete(database:str, table:str, columns:list) -> int:
         return 2
 
 
-def truncate(database:str, table:str) -> int:
+def truncate(database: str, table: str) -> int:
 
     temp = storage.Buscar(database)
 
@@ -299,58 +367,3 @@ def truncate(database:str, table:str) -> int:
 
     else:
         return 2
-
-#=====> susceptible a cambios
-def extractRow(database:str, table:str, id) -> int:
-
-    temp = storage.Buscar(database)
-
-    if temp:
-
-        temp = temp.Buscar(table)
-
-        if temp:
-            return temp.extractRow(id)
-
-        else:
-            return 3
-
-    else:
-        return 2
-
-
-# ==//== carga de tabla mediante archivo CSV ==//==
-
-def loadCSV(filecsv:str, database:str, table:str, numberColumns) -> int:
-
-    try:
-        archivo = open(filecsv)
-
-    except:
-        return 1
-
-    database_temp = storage.Buscar(database)
-    table_temp = storage.Buscar(database).Buscar(table)
-
-    if not database_temp:
-        createDatabase(5, database)
-
-    if not table_temp:
-        createTable(database, table, numberColumns)
-
-    elif table_temp.tamano != numberColumns:
-        return 1
-
-    header = archivo.readline().replace("\n", "").split(",")
-    temp_registros = archivo.readlines()
-
-    registros = []
-
-    for registro in temp_registros:
-        registros.append(registro.replace("\n", "").split(","))
-
-    # insertar WIP
-
-    print(header)
-    print(registros)
-    return 0
