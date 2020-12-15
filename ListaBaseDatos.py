@@ -115,11 +115,11 @@ class ListaBaseDatos:
         info = "{"
         
         j = 0
-        for i in self.list_table:
+        for i in self.lista_bases_datos:
             if j == 0:
-                info += i+ os.linesep
+                info += i.Name+ os.linesep
             else:
-                info += "|"+i+ os.linesep
+                info += "|"+i.Name+ os.linesep
             j = j+1
             
         file.write('dbs[shape=record label="'+info+'}"];')
@@ -127,3 +127,11 @@ class ListaBaseDatos:
         file.close()
         os.system('dot -Tpng dbs.dot -o dbs.png')
         os.system('dbs.png')
+
+
+    def Devolver(self, database, table):
+
+        temp=self.Buscar(database)
+
+        if temp:
+            return temp.Devolver(table)

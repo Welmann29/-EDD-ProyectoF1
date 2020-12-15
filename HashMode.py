@@ -174,12 +174,12 @@ def alterTable(database: str, tableOld: str, tableNew: str) -> int:
         return 2
 
 
-def alterAddColumn(database:str, table:str) -> int:
+def alterAddColumn(database:str, table:str, default: any) -> int:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.alterAddColumn(table)
+        return temp.alterAddColumn(table, default)
 
     else:
         return 2
