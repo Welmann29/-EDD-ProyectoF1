@@ -1,9 +1,8 @@
-import Tabla
-import serealizar
-import os
-import re
+import Tabla, serealizar
+import os, re
 
-table_name_pattern = "^[a-zA-Z_].*"
+table_name_pattern = "^[a-zA-Z_][a-zA-Z0-9#@$_]*"
+
 
 class BaseDatos:
     def __init__(self, Name, main_path):
@@ -32,12 +31,15 @@ class BaseDatos:
     # == CREAR TABLAS
     def createTable(self, tableName, numberColumns):
         if not tableName in self.list_table:
-            if re.search(table_name_pattern, tableName):
-                self.list_table.append(tableName)
-                temp = Tabla.Tabla(tableName, numberColumns)
-                serealizar.commit(temp, tableName, self.main_path)
-                return 0
-            else:
+            try:
+                if re.search(table_name_pattern, tableName):
+                    self.list_table.append(tableName)
+                    temp = Tabla.Tabla(tableName, numberColumns)
+                    serealizar.commit(temp, tableName, self.main_path)
+                    return 0
+                else:
+                    return 1
+            except:
                 return 1
         else:
             return 3
@@ -45,24 +47,30 @@ class BaseDatos:
     # == LLAVES PRIMARIAS Y FORÁNEAS    
     def alterAddPK(self, table, columns):
         if table in self.list_table:
-            if len(columns) == 0:
+            try:
+                if len(columns) == 0:
+                    return 1
+                else:    
+                    temp = serealizar.rollback(table, self.main_path)
+                    
+                    var = temp.alterAddPK(columns)
+                    serealizar.commit(temp, table, self.main_path)
+                    return var
+            except:
                 return 1
-            else:    
-                temp = serealizar.rollback(table, self.main_path)
-                
-                var = temp.alterAddPK(columns)
-                serealizar.commit(temp, table, self.main_path)
-                return var
         else:
             return 3
 
     def alterDropPK(self, table):
         if table in self.list_table:
-           temp = serealizar.rollback(table, self.main_path)
-           
-           var = temp.alterDropPK()
-           serealizar.commit(temp, table, self.main_path)
-           return var
+            try:
+                temp = serealizar.rollback(table, self.main_path)
+                
+                var = temp.alterDropPK()
+                serealizar.commit(temp, table, self.main_path)
+                return var
+            except:
+                return 1
         else: 
            return 3    
 
@@ -78,19 +86,22 @@ class BaseDatos:
     def alterTable(self, tableOld, tableNew):
         salida = self.Buscar(tableOld)
         if salida[0]:
-            temp = serealizar.rollback(tableOld, self.main_path)
-            os.remove(self.main_path+"\\"+tableOld+".bin")
-            if not tableNew in self.list_table:
-                if re.search(table_name_pattern, tableOld) and re.search(table_name_pattern, tableNew):
-                    self.list_table[salida[1]]= tableNew
-                    temp.alterTable(tableNew)
-                    serealizar.commit(temp, tableNew, self.main_path)
-                    return 0
-                else:
-                    return 1
+            try:
+                temp = serealizar.rollback(tableOld, self.main_path)
+                os.remove(self.main_path+"\\"+tableOld+".bin")
+                if not tableNew in self.list_table:
+                    if re.search(table_name_pattern, tableOld) and re.search(table_name_pattern, tableNew):
+                        self.list_table[salida[1]]= tableNew
+                        temp.alterTable(tableNew)
+                        serealizar.commit(temp, tableNew, self.main_path)
+                        return 0
+                    else:
+                        return 1
 
-            else:
-                return 4
+                else:
+                    return 4
+            except:
+                return 1
         else:
             return 3
     
@@ -98,9 +109,12 @@ class BaseDatos:
     def dropTable(self,tableName):
         salida = self.Buscar(tableName)
         if salida[0]:
-            self.list_table.pop(salida[1])
-            os.remove(self.main_path+"\\"+tableName+".bin")
-            return 0
+            try:
+                self.list_table.pop(salida[1])
+                os.remove(self.main_path+"\\"+tableName+".bin")
+                return 0
+            except:
+                return 1
         else:
             return 3
 
@@ -108,10 +122,13 @@ class BaseDatos:
     def alterAddColumn(self, table):
         salida = self.Buscar(table)
         if salida[0]:
-            temp = serealizar.rollback(table, self.main_path)
-            temp.alterAddColumn()
-            serealizar.commit(temp, table, self.main_path)
-            return 0
+            try:
+                temp = serealizar.rollback(table, self.main_path)
+                temp.alterAddColumn()
+                serealizar.commit(temp, table, self.main_path)
+                return 0
+            except:
+                return 1
         else:
             return 3
 
@@ -119,25 +136,34 @@ class BaseDatos:
     def alterDropColumn(self, table, columnNumber):
         salida = self.Buscar(table)
         if salida[0]:
-            temp = serealizar.rollback(table, self.main_path)
-            temp.alterDropColumn(columnNumber)
-            serealizar.commit(temp, table, self.main_path)
-            return 0
+            try:
+                temp = serealizar.rollback(table, self.main_path)
+                temp.alterDropColumn(columnNumber)
+                serealizar.commit(temp, table, self.main_path)
+                return 0
+            except:
+                return 1
         else:
             return 3
 
     # === EXTRAER INFORMACIÓN
     def extractTable(self, table):
         if table in self.list_table:
-            temp = serealizar.rollback(table, self.main_path)
-            return temp.extractTable()
+            try:
+                temp = serealizar.rollback(table, self.main_path)
+                return temp.extractTable()
+            except:
+                return 1
         else:
             return None
             
     def extractRangeTable(self, table, lower, upper):
         if table in self.list_table:
-            temp = serealizar.rollback(table, self.main_path)
-            return temp.extractRangeTable(lower, upper)
+            try:
+                temp = serealizar.rollback(table, self.main_path)
+                return temp.extractRangeTable(lower, upper)
+            except:
+                return 1
         else:
             return None
     

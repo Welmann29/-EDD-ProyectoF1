@@ -1,12 +1,14 @@
-import ListaBaseDatos as Storage
-import serealizar
-import os
-import re
+# HASH Mode Package
+# Released under MIT License
+# Copyright (c) 2020 TytusDb Team
+
+
+import ListaBaseDatos as Storage, serealizar
+import os, re, csv
 
 storage = Storage.ListaBaseDatos()
 main_path = os.getcwd()+"\\data\\hash"
 db_name_pattern = "^[a-zA-Z][a-zA-Z0-9#@$_]*"
-table_name_pattern = "^[a-zA-Z_][a-zA-Z0-9#@$_]*"
 
 
 # Cambiar la ubicación del directorio data (por defecto se usará el directorio de consola)
@@ -153,14 +155,12 @@ def alterDropPK(database: str, table: str, columns: list) -> int:
 
 def alterAddFK(database: str, table: str, references: dict) -> int:
 
-    #codigo en proceso (FASE 2)
-    pass
+    print("codigo en proceso (FASE 2)")
 
 
 def alterAddIndex(database: str, table: str, references: dict) -> int:
 
-    #codigo en proceso (FASE 2)
-    pass
+    print("codigo en proceso (FASE 2)")
 
 
 def alterTable(database: str, tableOld: str, tableNew: str) -> int:
@@ -233,11 +233,11 @@ def insert(database: str, table: str, register: list) -> int:
     else:
         return 2
 
-
-def loadCSV(file: str, database: str, table: str) -> int:
+# return opopopopopo
+def loadCSV(file: str, database: str, table: str) -> list:
 
     try:
-        archivo = open(file)
+        archivo = open(file, "r")
 
     except:
         return 1
@@ -245,35 +245,32 @@ def loadCSV(file: str, database: str, table: str) -> int:
     temp = storage.Buscar(database)
 
     if temp:
-
-        b = temp.Buscar(table)        
-        nombre = temp.list_table[b[1]]
         
-        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
+        try:
 
-        if b[0]:
+            b = temp.Buscar(table)        
+            nombre = temp.list_table[b[1]]
             
-            temp_registros = archivo.readlines()
+            tabla = serealizar.rollback(nombre, main_path+"\\"+database)
 
-            registros = []
-
-            for registro in temp_registros:                
-                registros.append(registro.replace("\n", "").split(","))
-
-            for registro in registros:
+            if b[0]:
                 
-                valor = tabla.insertar(registro)
+                registros = csv.reader(archivo, delimiter = ",")
+                valores=[]
 
-                if valor:
+                for registro in registros:   
+                    
+                    valores.append(tabla.insertar(registro))
+
+                else:
                     serealizar.commit(tabla, table, main_path+"\\"+database)
-                    return valor
+                    return valores
 
             else:
-                serealizar.commit(tabla, table, main_path+"\\"+database)
-                return 0
+                return 3
 
-        else:
-            return 3
+        except:
+            return 1
 
     else:
         return 2
