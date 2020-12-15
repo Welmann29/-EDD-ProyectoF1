@@ -30,15 +30,20 @@ class ListaBaseDatos:
                 return 2
 
         else:
-            temp_path = main_path+"\\"+database
 
-            if not os.path.isdir(temp_path):
-                os.mkdir(temp_path)
+            try:
+                temp_path = main_path+"\\"+database
 
-            temp = DB.BaseDatos(database, temp_path)          
-            self.lista_bases_datos.append(temp)
-                
-            return 0
+                if not os.path.isdir(temp_path):
+                    os.mkdir(temp_path)
+
+                temp = DB.BaseDatos(database, temp_path)          
+                self.lista_bases_datos.append(temp)
+                    
+                return 0
+
+            except:
+                return 1
 
 
     def showDatabases(self):
@@ -60,14 +65,19 @@ class ListaBaseDatos:
         if temp_old:
 
             if not temp_new:
-                temp_old.Name = databaseNew
 
-                temp_path_old = main_path+"\\"+databaseOld
-                temp_path_new = main_path+"\\"+databaseNew
+                try:
+                    temp_old.Name = databaseNew
 
-                os.rename(temp_path_old, temp_path_new)
+                    temp_path_old = main_path+"\\"+databaseOld
+                    temp_path_new = main_path+"\\"+databaseNew
 
-                return 0
+                    os.rename(temp_path_old, temp_path_new)
+
+                    return 0
+
+                except:
+                    return 1
 
             else:
                 return 3
@@ -81,14 +91,19 @@ class ListaBaseDatos:
         temp = self.Buscar(database)
 
         if temp:
-            self.lista_bases_datos.remove(temp)
 
-            temp_path = main_path+"\\"+database
+            try:
+                self.lista_bases_datos.remove(temp)
 
-            if os.path.isdir(temp_path):
-                os.rmdir(temp_path)
+                temp_path = main_path+"\\"+database
 
-            return 0
+                if os.path.isdir(temp_path):
+                    os.rmdir(temp_path)
+
+                return 0
+            
+            except:
+                return 1
 
         else:
             return 2
