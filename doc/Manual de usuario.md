@@ -1,29 +1,44 @@
-# Manual de Usuario
-texto
-  - viñeta
-  - viñeta
-  - viñeta
-  - viñeta
+# Manual De Usuario
 
+## Indice
 
-### Subtitulo
+- [Introducción](#introducción)
+- [Glosario](#glosario)
+- [FAQ](#faq)
+- [Uso del reportador gráfico](#uso-del-reportador-gráfico)
+- [Uso de la librería](#uso-de-la-librería)
+- [Uso de funciones de bases de datos](#uso-de-funciones-de-bases-de-datos)
+- [Uso de funciones de tablas](#uso-de-funciones-de-tablas)
+- [Uso de funciones de registros](#uso-de-funciones-de-registros)
 
-texto
+## Introducción
 
-##### Subsubtitulo
+cuerpo
 
-Esto es un [link](https://nodejs.org/)
+## Glosario
 
-```sh
-funcion 1
-funcion 2
-funcion 3
-funcion 4
-```
+cuerpo
 
+## FAQ
 
-| COL | COL|
-| ------ | ------ |
-| CELDA | CELDA |
-| CELDA | CELDA |
-| CELDA | CELDA |
+cuerpo
+
+## Uso de la librería
+
+cuerpo
+
+## Uso del reportador gráfico
+
+cuerpo
+
+## Uso de funciones de bases de datos
+
+cuerpo
+
+## Uso de funciones de tablas
+
+cuerpo
+
+## Uso de funciones de registros
+
+cuerpo
