@@ -1,5 +1,5 @@
 import BaseDatos as DB
-import os
+import os, shutil
 
 main_path = os.getcwd()+"\\data\\hash"
 
@@ -97,8 +97,10 @@ class ListaBaseDatos:
 
                 temp_path = main_path+"\\"+database
 
-                if os.path.isdir(temp_path):
+                try:
                     os.rmdir(temp_path)
+                except:
+                    shutil.rmtree(temp_path) 
 
                 return 0
             
