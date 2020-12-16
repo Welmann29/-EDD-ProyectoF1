@@ -19,10 +19,11 @@ class Nodo(object):
                     self.primaria += str(datos[i]) + '-'
                 contador += 1
 
-        if type(self.primaria) is str:
-            self.tipo = 'str'
-        else:
+        if type(self.primaria) is int:
             self.tipo = 'int'
+        else:
+            self.tipo = 'str'
+            self.primaria = str(self.primaria)
 
 
 class Tabla(object):
@@ -219,6 +220,10 @@ class Tabla(object):
                 primaria = self.UnirLlave(primaria)
             else:
                 primaria = primaria[0]
+
+            if not (type(primaria) is int):
+                primaria = str(primaria)
+
             if self.tipoPrimaria == 'int':
                 if type(primaria) is str:
                     return 1
@@ -270,6 +275,10 @@ class Tabla(object):
                 primaria = self.UnirLlave(primaria)
             else:
                 primaria = primaria[0]
+
+            if not (type(primaria) is int):
+                primaria = str(primaria)
+
             if (type(primaria) is str) or (type(primaria) is int):
                 indice = self.funcionHash(primaria)
                 if self.vector[indice] is None:
@@ -312,6 +321,10 @@ class Tabla(object):
             primaria = self.UnirLlave(primaria)
         else:
             primaria = primaria[0]
+
+        if not (type(primaria) is int):
+            primaria = str(primaria)
+
         keys = registro.keys()
         for i in keys:
             if i >= self.columnas:
@@ -416,14 +429,14 @@ class Tabla(object):
         subprocess.call('dot -Tpng hash.dot -o hash.png')
         os.system('hash.png')
 
-    def alterAddColumn(self):
+    def alterAddColumn(self, default):
         try:
             for i in self.vector:
                 if i is None:
                     '''No hace nada'''
                 else:
                     for j in i:
-                        j.datos.append(None)
+                        j.datos.append(default)
             self.columnas += 1
             return 0
         except:
@@ -462,9 +475,13 @@ class Tabla(object):
             for i in referencias:
                 if i >= self.columnas:
                     return 5
+            temporal = self.PK
             self.PK = referencias
             if self.elementos > 0:
-                self.RestructuracionPorLlavePrimaria()
+                retorno = self.RestructuracionPorLlavePrimaria()
+                if not retorno:
+                    self.PK = temporal
+                    return 1
             return 0
         except:
             return 1
@@ -479,11 +496,6 @@ class Tabla(object):
             return 1
 
     def RestructuracionPorLlavePrimaria(self):
-        self.elementos = 0
-        self.factorCarga = 0
-        self.tamano = 13
-        self.contadorPK = 0
-        self.tipoPrimaria = None
         lista = []
         for i in self.vector:
             if i is None:
@@ -491,11 +503,33 @@ class Tabla(object):
             else:
                 for j in i:
                     lista.append(j)
+
+        comprobacion = self.ComprobarReestructuracion(lista)
+
+        if not comprobacion:
+            return False
+
+        self.elementos = 0
+        self.factorCarga = 0
+        self.tamano = 13
+        self.contadorPK = 0
+        self.tipoPrimaria = None
+
         self.vector = []
         for i in range(13):
             self.vector.append(None)
         for nodo in lista:
             self.insertar(nodo.datos)
+        return True
+
+    def ComprobarReestructuracion(self, lista):
+        tablaPrueba = Tabla('prueba', self.columnas)
+        tablaPrueba.alterAddPK(self.PK)
+        for nodo in lista:
+            retorno = tablaPrueba.insertar(nodo.datos)
+            if not (retorno == 0):
+                return False
+        return True
 
     def UnirLlave(self, primaria):
         combinada = ''
@@ -547,11 +581,11 @@ class Tabla(object):
 tabla = Tabla('Integrantes', 2)
 tabla.alterAddPK([0])
 tabla2 = Tabla('Integrantes2', 3)
-tabla2.alterAddPK([1])
+tabla2.alterAddPK([0])
 
 tabla2.insertar(['aa', 'Dato1', 45])
 tabla2.insertar(['aa', 'Dato1 Repetido', 8])
-tabla2.insertar(['ab', 'Dato2', 9])
+tabla2.insertar(['ab', 'Dato1', 9])
 tabla2.insertar(['ba', 'Dato2 invertido', 10])
 tabla2.insertar(['aab', 'Dato3', 11])
 tabla2.insertar(['aba', 'Dato3 modificado', 12])
@@ -564,14 +598,27 @@ tabla2.insertar(['abc', 'Dato9', 789])
 tabla2.insertar(['arr', 'Dato11', 87])
 tabla2.insertar(['acc', 'Dato10', 756])
 
+print()
+tabla2.imprimir()
+print()
+print('Quito la primaria')
+print(tabla2.alterDropPK())
+print('Pongo la segunda me dara error')
+print(tabla2.alterAddPK([1]))
+print('La 0 me dara exito')
+print(tabla2.alterAddPK([0]))
+print()
+tabla2.imprimir()
+print()
+
 print(tabla2.extractTable())
 print('Rango de tabla')
 print(tabla2.extractRangeTable(['aa'], ['aab']))
 
 tabla2.imprimir()
 print('Probando add column')
-print(tabla2.alterAddColumn())
-print(tabla2.alterAddColumn())
+print(tabla2.alterAddColumn('Agregada1'))
+print(tabla2.alterAddColumn('Agregada2'))
 print()
 tabla2.imprimir()
 print(tabla2.alterDropColumn(5))
@@ -656,8 +703,8 @@ print(tabla.alterAddPK([0, 1]))
 print('Range table compuesta')
 print(tabla.extractRangeTable([8, 'Welmann7'], [120, 'Welmann91']))
 tabla.imprimir()
-tabla.Grafico()
-tabla.alterAddColumn()
+# tabla.Grafico()
+tabla.alterAddColumn('Agregada3')
 print('Probando updates compuestas')
 print(tabla.update([666], {1: 'hola', 2: 'puto'}))
 print(tabla.update([12], {1: 'hola', 2: 'Me modificaron'}))
@@ -675,7 +722,7 @@ print('Quitando PK')
 print(tabla.alterDropPK())
 print('Volviendo a poner PK')
 print(tabla.alterAddPK([0]))
-tabla.alterAddColumn()
+tabla.alterAddColumn('OtraAgregada')
 
 print(tabla.update([666], {1: 'hola', 2: 'puto'}))
 print(tabla.update([12], {1: 'hola', 2: 'Me modificaron'}))
@@ -687,6 +734,8 @@ print(tabla.deleteTable([2]))
 print('Extraer tupla normal')
 print(tabla.ExtraerTupla([1346]))
 tabla.imprimir()
+
+
 '''
 print()
 print()
