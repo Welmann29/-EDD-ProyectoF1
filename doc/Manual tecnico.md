@@ -1,29 +1,54 @@
-# Manual de Usuario
-texto
-  - viñeta
-  - viñeta
-  - viñeta
-  - viñeta
+# Manual Técnico
 
+## Indice
 
-### Subtitulo
+- [Introducción](#introducción)
+- [Objetivos](#objetivos)
+- [Alcances del proyecto](#alcances-del-proyecto)
+- [Requerimentos funcionales](#requerimentos-funcionales)
+- [Estructura de bases de datos](#estructura-de-bases-de-datos)
+- [Estructura de tablas](#estructura-de-tablas)
+- [Estructura de registros](#estructura-de-registros)
+- [Reportador gráfico](#reportador-grafico)
+- [Diagrama de clases](#diagrama-de-clases)
+- [Diagrama de Gantt](#diagrama-de-gantt)
 
-texto
+## Introducción
 
-##### Subsubtitulo
+cuerpo
 
-Esto es un [link](https://nodejs.org/)
+## Objetivos
 
-```sh
-funcion 1
-funcion 2
-funcion 3
-funcion 4
-```
+cuerpo
 
+## Alcances del proyecto
 
-| COL | COL|
-| ------ | ------ |
-| CELDA | CELDA |
-| CELDA | CELDA |
-| CELDA | CELDA |
+cuerpo
+
+## Requerimentos funcionales
+
+cuerpo
+
+## Estructura de bases de datos
+
+cuerpo
+
+## Estructura de tablas
+
+cuerpo
+
+## Estructura de registros
+
+cuerpo
+
+## Reportador gráfico
+
+cuerpo
+
+## Diagrama de clases
+
+![diagrama-clases](../img/diagrama-clases.png "Diagrama de clases")
+
+## Diagrama de gantt
+
+cuerpo
