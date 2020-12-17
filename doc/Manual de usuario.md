@@ -224,7 +224,7 @@ Con esta funcion es posible extraer la informacion de una tupla especificando su
 
 | Valor de retorno | Definición |
 | ------ | ------ |
-| <Lista de datos> | Operación exitosa |
+| Lista de datos | Operación exitosa |
 | <Lista vacía> | Cualquier error en la operacion |
 
 
