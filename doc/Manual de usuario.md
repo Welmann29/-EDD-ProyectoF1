@@ -95,7 +95,112 @@ Elimina una base de datos con todo su contenido. El parámetro *database* se ref
 
 ## Uso de funciones de tablas
 
-cuerpo
+Las siguientes funciones se enfocan en la manipulación de las tablas de una base de datos previamente definida.
+
+### createTable(database, table, numberColumns)
+
+Crea una tabla en la base de datos especificada. Recibe tres parámetros, los cuales son: la base de datos donde creará la tabla, el nombre de la tabla a crear y el número de columnas que tendrá la misma. No pueden existir dos tablas con el mismo nombre en la misma base de datos.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 2 | Tabla existente |
+
+### showTables(database)
+Recopila las tablas que contiene la base de datos consultada y devuelve los nombre de las tablas en una lista.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| <Lista de tablas> | Operación exitosa |
+| <Lista vacía> | La base de datos no contiene tablas |
+| None | Base de datos inexistente |
+
+### extractTable(database, table)
+Extrae los registros que contiene una tabla. Recibe dos parámetros: la base de datos seleccionada y el nombre de la tabla a la cual se extraerán sus registros. Reenvía los parametros a la sección de registros.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| <Lista de registros> | Operación exitosa |
+| <Lista vacía> | La tabla no contiene registros |
+| None | Error en la operación |
+
+### extractRangeTable(database, table, columnNumber, lower, upper)
+Extrae los registros correspondientes a un rango solicitado, para devolverlos en una lista. Reenvía los parametros a la sección de registros.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| <Lista de registros> | Operación exitosa |
+| <Lista vacía> | La tabla no contiene registros |
+| None | Error en la operación |
+
+### alterAddPK(database, table, columns) 
+Asocia una llave primaria simple o compuesta a una tabla especificada. Reenvía los parametros a la sección de registros.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla inexistente |
+| 4 | Llave primaria existente |
+| 5 | Columnas fuera de límites |
+
+### alterDropPK(database, table)
+Elimina la llave primaria actual en la tabla especificada. Reenvía los parámetros a la sección de registros.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla inexistente |
+| 4 | Llave primaria inexistente |
+
+### alterTable(database, tableOld, tableNew)
+Renombra la tabla que se especifique. Recibe 3 parámetros:  Nombre de la base de datos a acceder, el nombre actual de la tabla y el nuevo nombre que tomará.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla a modificar inexistente |
+| 4 | Nuevo nombre de tabla existente |
+
+### alterAddColumn(database, table, default)
+Agrega una columna más a la tabla especificada, el parámetro default es el valor que tomará la nueva columna. Reenvía los parámetros a la sección de registro.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla inexistente |
+
+### alterDropColumn(database, table, columnNumber)
+Elimina la columna especificada con excepción que sean llaves primarias. Recibe 3 parámetros: Nombre de la base de datos a acceder, nombre de la tabla a modificar y numero de columna a eliminar. Reenvía los parámetros a la sección de registro.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla inexistente |
+| 4 | Es llave primaria o la tabla no puede quedarse sin columnas |
+| 5 | Columna fuera de límites |
+
+### dropTable(database, table)
+Elimina una tabla de la base de datos especificada. Recibe dos parámetros: Nombre de la base de datos a acceder y nombre de la tabla a eliminar.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla inexistente |
+
 
 ## Uso de funciones de registros
 

@@ -40,28 +40,21 @@ class BaseDatos:
 
 
     def Cargar(self, table):
-        
         try:
             if self.tabla_actual.nombre==table:
-                print("~~> ya cargada")
                 return self.tabla_actual
-
             elif table in self.list_table:
                 self.tabla_actual = serealizar.rollback(table, self.main_path)
                 return self.tabla_actual
-
             else:
                 return False
-
         except:
             
             if table in self.list_table:
                 self.tabla_actual = serealizar.rollback(table, self.main_path)
                 return self.tabla_actual
-
             else:
                 return False
-
 
     # == CREAR TABLAS
     def createTable(self, tableName, numberColumns):
@@ -79,6 +72,32 @@ class BaseDatos:
         else:
             return 3
 
+    # == MOSTRAR TABLAS
+    def showTables(self):
+        return self.list_table
+
+    # === EXTRAER INFORMACIÓN
+    def extractTable(self, table):
+        if table in self.list_table:
+            try:
+                temp = serealizar.rollback(table, self.main_path)    
+                return temp.extractTable()
+            except:
+                return 1
+        else:
+            return None
+    
+    # === EXTRA Y DEVUELVE LISTA DE ELEMENTOS DE UN RANGO ESPECIFICO 
+    def extractRangeTable(self, table, columnNumber, lower, upper):
+        if table in self.list_table:
+            try:
+                temp = serealizar.rollback(table, self.main_path)    
+                return temp.extractRangeTable(columnNumber, lower, upper)
+            except:
+                return 1
+        else:
+            return None
+  
     # == LLAVES PRIMARIAS Y FORÁNEAS    
     def alterAddPK(self, table, columns):
         if table in self.list_table:
@@ -107,14 +126,6 @@ class BaseDatos:
         else: 
            return 3    
 
-    def defineFK(self):
-        #codigo en proceso (FASE 2)
-        pass
-
-    # == MOSTRAR TABLAS
-    def showTables(self):
-        return self.list_table
-
     # == CAMBIAR NOMBRES
     def alterTable(self, tableOld, tableNew):
         salida = self.Buscar(tableOld)
@@ -138,26 +149,14 @@ class BaseDatos:
         else:
             return 3
     
-    # === ELIMINAR TABLA
-    def dropTable(self,tableName):
-        salida = self.Buscar(tableName)
-        if salida[0]:
-            try:
-                self.list_table.pop(salida[1])
-                os.remove(self.main_path+"\\"+tableName+".bin")
-                return 0
-            except:
-                return 1
-        else:
-            return 3
 
-    # === AGREGAR N-ESIMA COLUMNA
-    def alterAddColumn(self, table):
+# === AGREGAR N-ESIMA COLUMNA
+    def alterAddColumn(self, table, default):
         salida = self.Buscar(table)
         if salida[0]:
             try:
                 temp = self.Cargar(table)                    
-                var = temp.alterAddColumn()
+                var = temp.alterAddColumn(default)
                 self.Guardar()
                 return var
             except:
@@ -179,26 +178,19 @@ class BaseDatos:
         else:
             return 3
 
-    # === EXTRAER INFORMACIÓN
-    def extractTable(self, table):
-        if table in self.list_table:
+    # === ELIMINAR TABLA
+    def dropTable(self,tableName):
+        salida = self.Buscar(tableName)
+        if salida[0]:
             try:
-                temp = serealizar.rollback(table, self.main_path)    
-                return temp.extractTable()
+                self.list_table.pop(salida[1])
+                os.remove(self.main_path+"\\"+tableName+".bin")
+                return 0
             except:
                 return 1
         else:
-            return None
-            
-    def extractRangeTable(self, table, columnNumber, lower, upper):
-        if table in self.list_table:
-            try:
-                temp = serealizar.rollback(table, self.main_path)    
-                return temp.extractRangeTable(columnNumber, lower, upper)
-            except:
-                return 1
-        else:
-            return None
+            return 3
+
     
     # === GRAFICAR LAS TABLAS QUE CONTIENE LA BD
     def graficar(self):
