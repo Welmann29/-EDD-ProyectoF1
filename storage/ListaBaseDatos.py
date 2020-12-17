@@ -1,4 +1,9 @@
-import BaseDatos as DB
+# HASH Mode Package
+# Released under MIT License
+# Copyright (c) 2020 TytusDb Team
+
+
+from storage import BaseDatos as DB
 import os, shutil
 
 main_path = os.getcwd()+"\\data\\hash"

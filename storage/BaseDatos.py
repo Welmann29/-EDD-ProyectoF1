@@ -1,14 +1,21 @@
-import Tabla, serealizar
+# HASH Mode Package
+# Released under MIT License
+# Copyright (c) 2020 TytusDb Team
+
+
+from storage import Tabla, serealizar
 import os, re
 
 table_name_pattern = "^[a-zA-Z_][a-zA-Z0-9#@$_]*"
 
 
 class BaseDatos:
+    
     def __init__(self, Name, main_path):
         self.Name = Name
         self.list_table = []
         self.main_path = main_path
+        self.tabla_actual = None
         for tabla in os.listdir(self.main_path):
             temp = tabla.replace(".bin","")
             self.list_table.append(temp)
@@ -28,10 +35,33 @@ class BaseDatos:
         return salida
 
     # == DEVUELVE EL OBJETO PARA LA INTERFAZ GRÁFICA
-    def Devolver(self, table):
-        temp = serealizar.rollback(table, self.main_path)
-        serealizar.commit(temp, table, self.main_path)
-        return temp
+    def Guardar(self):
+        serealizar.commit(self.tabla_actual, self.tabla_actual.nombre, self.main_path)
+
+
+    def Cargar(self, table):
+        
+        try:
+            if self.tabla_actual.nombre==table:
+                print("~~> ya cargada")
+                return self.tabla_actual
+
+            elif table in self.list_table:
+                self.tabla_actual = serealizar.rollback(table, self.main_path)
+                return self.tabla_actual
+
+            else:
+                return False
+
+        except:
+            
+            if table in self.list_table:
+                self.tabla_actual = serealizar.rollback(table, self.main_path)
+                return self.tabla_actual
+
+            else:
+                return False
+
 
     # == CREAR TABLAS
     def createTable(self, tableName, numberColumns):
@@ -56,10 +86,9 @@ class BaseDatos:
                 if len(columns) == 0:
                     return 1
                 else:    
-                    temp = serealizar.rollback(table, self.main_path)
-                    
+                    temp = self.Cargar(table)                    
                     var = temp.alterAddPK(columns)
-                    serealizar.commit(temp, table, self.main_path)
+                    self.Guardar()
                     return var
             except:
                 return 1
@@ -69,10 +98,9 @@ class BaseDatos:
     def alterDropPK(self, table):
         if table in self.list_table:
             try:
-                temp = serealizar.rollback(table, self.main_path)
-                
+                temp = self.Cargar(table)                    
                 var = temp.alterDropPK()
-                serealizar.commit(temp, table, self.main_path)
+                self.Guardar()
                 return var
             except:
                 return 1
@@ -128,10 +156,10 @@ class BaseDatos:
         salida = self.Buscar(table)
         if salida[0]:
             try:
-                temp = serealizar.rollback(table, self.main_path)
-                temp.alterAddColumn()
-                serealizar.commit(temp, table, self.main_path)
-                return 0
+                temp = self.Cargar(table)                    
+                var = temp.alterAddColumn()
+                self.Guardar()
+                return var
             except:
                 return 1
         else:
@@ -142,10 +170,10 @@ class BaseDatos:
         salida = self.Buscar(table)
         if salida[0]:
             try:
-                temp = serealizar.rollback(table, self.main_path)
-                temp.alterDropColumn(columnNumber)
-                serealizar.commit(temp, table, self.main_path)
-                return 0
+                temp = self.Cargar(table)                    
+                var = temp.alterDropColumn()
+                self.Guardar()
+                return var
             except:
                 return 1
         else:
@@ -155,7 +183,7 @@ class BaseDatos:
     def extractTable(self, table):
         if table in self.list_table:
             try:
-                temp = serealizar.rollback(table, self.main_path)
+                temp = serealizar.rollback(table, self.main_path)    
                 return temp.extractTable()
             except:
                 return 1
@@ -165,7 +193,7 @@ class BaseDatos:
     def extractRangeTable(self, table, columnNumber, lower, upper):
         if table in self.list_table:
             try:
-                temp = serealizar.rollback(table, self.main_path)
+                temp = serealizar.rollback(table, self.main_path)    
                 return temp.extractRangeTable(columnNumber, lower, upper)
             except:
                 return 1
