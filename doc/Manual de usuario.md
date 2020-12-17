@@ -202,9 +202,63 @@ Elimina una tabla de la base de datos especificada. Recibe dos parámetros: Nomb
 | 3 | Tabla inexistente |
 
 
-## Uso de funciones de registros
+## Uso de funciones de tuplas
 
-cuerpo
+Las siguientes funciones se enfocan en la manipulación de las tuplas de una tabla previamente definida.
+
+### insert(database, table, register)
+
+Ingresa un nuevo registro en la tabla de la base de datos especificada. Recibe como parametro el nombre de la base de datos, de la tabla y una lista con los valores a insertar. Esta lista debe tener exactamente el numero de elementos correspondientes a el numero de columnas de la tabla especificada, si tiene columnas vacias, se sugiere que concatene None hasta completar el numero de elementos.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla existente |
+| 4 | Llave primaria duplicada |
+| 3 | Numero de columnas no coinciden |
+
+### extractRow(database, table, primaryKey[list])
+Con esta funcion es posible extraer la informacion de una tupla especificando su llave primaria. Recibe como parametro el nombre de la base de datos, de la tabla y una lista con los valores que componen la llave primaria; si la llave primaria es simple, de igual manera se debe enviar en forma de lista; se sugiere que se envie todo dato entero en formato entero.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| <Lista de datos> | Operación exitosa |
+| <Lista vacía> | Cualquier error en la operacion |
+
+
+### update(database, table, dict, primaryKey[list])
+Esta funcion permite modificar los datos de un registro en especifico, especificando su llave primaria, es posible modificar las propias llaves primarias, sin embargo se verificara que la nueva primaria no este repetida, esto para mantener la consistencia de los datos, si la nueva primaria se repite la operacion fallara. Recibe como parametro el nombre de la base de datos, de la tabla, una lista con los valores que componen la llave primaria; si la llave primaria es simple, de igual manera se debe enviar en forma de lista; y un diccionario que tenga como claves la columna a modificar y como valor el nuevo valor a modificar, se sugiere que se envie todo dato entero en formato entero.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla existente |
+| 4 | Llave primaria no existe |
+
+### delete(database, table, columnNumber, primaryKey[list])
+Elimina totalmente un registro de la tabla especificada por medio de su llave primaria. Recibe como parametro el nombre de la base de datos, de la tabla y una lista con los valores que componen la llave primaria; si la llave primaria es simple, de igual manera se debe enviar en forma de lista; se sugiere que se envie todo dato entero en formato entero.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla existente |
+| 4 | Llave primaria no existe |
+
+### truncate(database, table) 
+Vacia una tabla, dejandola sin registros pero sin eliminarla totalmente de la base de datos. Recibe como parametro el nombre de la base de datos y de la tabla a vacear.
+
+| Valor de retorno | Definición |
+| ------ | ------ |
+| 0 | Operación exitosa |
+| 1 | Error en la operación |
+| 2 | Base de datos inexistente |
+| 3 | Tabla inexistente |
 
 
 ### loadCSV(file, database, table)
