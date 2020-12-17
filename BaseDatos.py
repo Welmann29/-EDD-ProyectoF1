@@ -27,6 +27,11 @@ class BaseDatos:
         salida = [existe, i]
         return salida
 
+    # == DEVUELVE EL OBJETO PARA LA INTERFAZ GRÁFICA
+    def Devolver(self, table):
+        temp = serealizar.rollback(table, self.main_path)
+        serealizar.commit(temp, table, self.main_path)
+        return temp
 
     # == CREAR TABLAS
     def createTable(self, tableName, numberColumns):
@@ -157,11 +162,11 @@ class BaseDatos:
         else:
             return None
             
-    def extractRangeTable(self, table, lower, upper):
+    def extractRangeTable(self, table, columnNumber, lower, upper):
         if table in self.list_table:
             try:
                 temp = serealizar.rollback(table, self.main_path)
-                return temp.extractRangeTable(lower, upper)
+                return temp.extractRangeTable(columnNumber, lower, upper)
             except:
                 return 1
         else:
