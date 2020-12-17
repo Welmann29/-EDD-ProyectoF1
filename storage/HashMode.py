@@ -3,15 +3,13 @@
 # Copyright (c) 2020 TytusDb Team
 
 
-import ListaBaseDatos as Storage, serealizar
+from storage import ListaBaseDatos as Storage, serealizar
 import os, re, csv
 
 storage = Storage.ListaBaseDatos()
 main_path = os.getcwd()+"\\data\\hash"
 db_name_pattern = "^[a-zA-Z][a-zA-Z0-9#@$_]*"
 
-
-# Cambiar la ubicación del directorio data (por defecto se usará el directorio de consola)
 
 def setDir(newPath: str) -> int:
 
@@ -58,10 +56,15 @@ __init__()
 
 def createDatabase(database: str) -> int:
 
-    if re.search(db_name_pattern, database):
-        return storage.createDatabase(database)
+    try:
+        
+        if re.search(db_name_pattern, database):
+            return storage.createDatabase(database)
 
-    else:
+        else:
+            return 1
+
+    except:
         return 1
 
 
@@ -219,10 +222,9 @@ def insert(database: str, table: str, register: list) -> int:
         b = temp.Buscar(table)        
         
         if b[0]:
-            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
+            tabla = temp.Cargar(table)
             var = tabla.insertar(register)            
-            serealizar.commit(tabla, table, main_path+"\\"+database)
-
+            temp.Guardar()
             return var
 
         else:
@@ -238,7 +240,7 @@ def loadCSV(file: str, database: str, table: str) -> list:
         archivo = open(file, "r")
 
     except:
-        return 1
+        return []
 
     temp = storage.Buscar(database)
 
@@ -263,13 +265,13 @@ def loadCSV(file: str, database: str, table: str) -> list:
                     return valores
 
             else:
-                return 3
+                return []
 
         except:
-            return 1
+            return []
 
     else:
-        return 2
+        return []
         
 
 def extractRow(database: str, table: str, columns: list) -> list:
@@ -281,11 +283,9 @@ def extractRow(database: str, table: str, columns: list) -> list:
         b = temp.Buscar(table)       
         
         if b[0]:
-            
-            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
+            tabla = temp.Cargar(table)
             var = tabla.ExtraerTupla(columns)            
-            serealizar.commit(tabla, table, main_path+"\\"+database)
-
+            temp.Guardar()
             return var
 
         else:
@@ -304,11 +304,9 @@ def update(database: str, table: str, register: dict, columns: list) -> int:
         b = temp.Buscar(table)
 
         if b[0]:
-
-            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
+            tabla = temp.Cargar(table)
             var = tabla.update(columns, register)            
-            serealizar.commit(tabla, table, main_path+"\\"+database)
-
+            temp.Guardar()
             return var
 
         else:
@@ -327,11 +325,9 @@ def delete(database: str, table: str, columns: list) -> int:
         b = temp.Buscar(table)        
 
         if b[0]:
-                        
-            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
+            tabla = temp.Cargar(table)
             var = tabla.deleteTable(columns)            
-            serealizar.commit(tabla, table, main_path+"\\"+database)
-
+            temp.Guardar()
             return var
 
         else:
@@ -350,11 +346,9 @@ def truncate(database: str, table: str) -> int:
         b = temp.Buscar(table)
 
         if b[0]:
-
-            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
+            tabla = temp.Cargar(table)
             var = tabla.truncate()            
-            serealizar.commit(tabla, table, main_path+"\\"+database)
-
+            temp.Guardar()
             return var
 
         else:
