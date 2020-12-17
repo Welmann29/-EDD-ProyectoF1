@@ -120,12 +120,12 @@ def extractTable(database: str, table: str) -> list:
         return None
 
 
-def extractRangeTable(database: str, table: str, lower: any, upper: any) -> list:
+def extractRangeTable(database: str, table: str, columnNumber: int, lower: any, upper: any) -> list:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.extractRangeTable(table, lower, upper)
+        return temp.extractRangeTable(table, columnNumber, lower, upper)
 
     else:
         return None
@@ -142,12 +142,12 @@ def alterAddPK(database: str, table: str, columns: list) -> int:
         return 2
 
 
-def alterDropPK(database: str, table: str, columns: list) -> int:
+def alterDropPK(database: str, table: str) -> int:
 
     temp = storage.Buscar(database)
 
     if temp:
-        return temp.alterDropPK(table, columns)
+        return temp.alterDropPK(table)
         
     else:
         return 2
@@ -217,11 +217,9 @@ def insert(database: str, table: str, register: list) -> int:
     if temp:
 
         b = temp.Buscar(table)        
-        nombre = temp.list_table[b[1]]
         
-        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
-
         if b[0]:
+            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
             var = tabla.insertar(register)            
             serealizar.commit(tabla, table, main_path+"\\"+database)
 
@@ -233,7 +231,7 @@ def insert(database: str, table: str, register: list) -> int:
     else:
         return 2
 
-# return opopopopopo
+
 def loadCSV(file: str, database: str, table: str) -> list:
 
     try:
@@ -251,15 +249,13 @@ def loadCSV(file: str, database: str, table: str) -> list:
             b = temp.Buscar(table)        
             nombre = temp.list_table[b[1]]
             
-            tabla = serealizar.rollback(nombre, main_path+"\\"+database)
-
             if b[0]:
                 
+                tabla = serealizar.rollback(nombre, main_path+"\\"+database)
                 registros = csv.reader(archivo, delimiter = ",")
-                valores=[]
+                valores=[]                
 
-                for registro in registros:   
-                    
+                for registro in registros:                       
                     valores.append(tabla.insertar(registro))
 
                 else:
@@ -276,22 +272,27 @@ def loadCSV(file: str, database: str, table: str) -> list:
         return 2
         
 
-def extractRow(database: str, table: str, columns: list) -> int:
+def extractRow(database: str, table: str, columns: list) -> list:
 
     temp = storage.Buscar(database)
 
     if temp:
 
-        temp = temp.Buscar(table)
+        b = temp.Buscar(table)       
+        
+        if b[0]:
+            
+            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
+            var = tabla.ExtraerTupla(columns)            
+            serealizar.commit(tabla, table, main_path+"\\"+database)
 
-        if temp:
-            return temp.extractRow(columns)
+            return var
 
         else:
-            return 3
+            return []
 
     else:
-        return 2
+        return []
 
 
 def update(database: str, table: str, register: dict, columns: list) -> int:
@@ -300,12 +301,11 @@ def update(database: str, table: str, register: dict, columns: list) -> int:
 
     if temp:
 
-        b = temp.Buscar(table)        
-        nombre = temp.list_table[b[1]]
-        
-        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
+        b = temp.Buscar(table)
 
         if b[0]:
+
+            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
             var = tabla.update(columns, register)            
             serealizar.commit(tabla, table, main_path+"\\"+database)
 
@@ -325,11 +325,10 @@ def delete(database: str, table: str, columns: list) -> int:
     if temp:
 
         b = temp.Buscar(table)        
-        nombre = temp.list_table[b[1]]
-        
-        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
 
         if b[0]:
+                        
+            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
             var = tabla.deleteTable(columns)            
             serealizar.commit(tabla, table, main_path+"\\"+database)
 
@@ -348,12 +347,11 @@ def truncate(database: str, table: str) -> int:
 
     if temp:
 
-        b = temp.Buscar(table)        
-        nombre = temp.list_table[b[1]]
-        
-        tabla = serealizar.rollback(nombre, main_path+"\\"+database)
+        b = temp.Buscar(table)
 
         if b[0]:
+
+            tabla = serealizar.rollback(temp.list_table[b[1]], main_path+"\\"+database)
             var = tabla.truncate()            
             serealizar.commit(tabla, table, main_path+"\\"+database)
 
