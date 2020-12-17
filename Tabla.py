@@ -63,8 +63,10 @@ class Tabla(object):
             if self.elementos == 0:
                 self.tipoPrimaria = nuevo.tipo
             else:
-                if self.tipoPrimaria != nuevo.tipo:
-                    return False
+                if self.tipoPrimaria is None:
+                    '''No hace nada'''
+                elif self.tipoPrimaria != nuevo.tipo:
+                    return 1
             posicion = self.funcionHash(nuevo.primaria)
             # Ahora se verificara si la posicion ya tiene una lista o esta vacia
             if self.vector[posicion] is None:
@@ -81,6 +83,8 @@ class Tabla(object):
             if self.tipoPrimaria == 'int':
                 if self.Existe(self.vector[posicion], nuevo.primaria):
                     return 4
+            elif self.tipoPrimaria is None:
+                '''No se hacce nada'''
             else:
                 if self.ExisteToAscii(self.vector[posicion], nuevo.primaria):
                     return 4
@@ -127,7 +131,7 @@ class Tabla(object):
             self.insertar(nodo.datos)
 
     def funcionHash(self, primaria):
-        if self.tipoPrimaria == 'str':
+        if type(primaria) is str:
             primaria = self.toASCII(primaria)
         index = primaria % self.tamano
         return index
@@ -164,13 +168,13 @@ class Tabla(object):
 
     def ExisteToAscii(self, lista, dato):
         for i in lista:
-            if i.primaria == dato:
+            if str(i.primaria) == str(dato):
                 return True
         return False
 
     def BuscandoNodoToAscii(self, lista, dato):
         for i in lista:
-            if i.primaria == dato:
+            if str(i.primaria) == str(dato):
                 return i
         return False
 
@@ -190,7 +194,7 @@ class Tabla(object):
     def OrdenarBurbujaToAscii(self, vector):
         for i in range(1, len(vector)):
             for j in range(0, len(vector) - 1):
-                if self.toASCII(vector[j].primaria) > self.toASCII(vector[j + 1].primaria):
+                if self.toASCII(str(vector[j].primaria)) > self.toASCII(str(vector[j + 1].primaria)):
                     aux = vector[j + 1]
                     vector[j + 1] = vector[j]
                     vector[j] = aux
@@ -226,27 +230,25 @@ class Tabla(object):
 
             if self.tipoPrimaria == 'int':
                 if type(primaria) is str:
-                    return 1
+                    return []
                 indice = self.funcionHash(primaria)
                 casilla = self.vector[indice]
                 if casilla is None:
-                    return 4  # Llave primaria no existe
+                    return []  # Llave primaria no existe
                 nodo = self.BusquedaBinariaDevlviendoNodo(casilla, primaria)
             else:
-                if type(primaria) is int:
-                    return 1
                 indice = self.funcionHash(primaria)
                 casilla = self.vector[indice]
                 if casilla is None:
-                    return 4  # Llave primaria no existe
+                    return []  # Llave primaria no existe
                 nodo = self.BuscandoNodoToAscii(casilla, primaria)
 
             if type(nodo) == bool:
-                return 4
+                return []
             else:
                 return nodo.datos
         except:
-            return 1
+            return []
 
     '''
     Truncate, metodo para vaciar la tabla totalmente 
@@ -311,53 +313,55 @@ class Tabla(object):
                 return lista
         else:
             for i in lista:
-                if i.primaria == primaria:
+                if str(i.primaria) == str(primaria):
                     lista.remove(i)
                     return lista
             return False
 
     def update(self, primaria, registro):
-        if len(primaria) > 1:
-            primaria = self.UnirLlave(primaria)
-        else:
-            primaria = primaria[0]
+        try:
+            if len(primaria) > 1:
+                primaria = self.UnirLlave(primaria)
+            else:
+                primaria = primaria[0]
 
-        if not (type(primaria) is int):
-            primaria = str(primaria)
-
-        keys = registro.keys()
-        for i in keys:
-            if i >= self.columnas:
-                return 1
-
-        if self.tipoPrimaria == 'int':
             if not (type(primaria) is int):
-                return 1
-            indice = self.funcionHash(primaria)
-            if self.vector[indice] is None:
-                return 4
-            if not self.Existe(self.vector[indice], primaria):
-                return 4
-            elemento = self.BusquedaBinariaDevlviendoNodo(self.vector[indice], primaria)
-            indiceInterno = self.vector[indice].index(elemento)
+                primaria = str(primaria)
+
+            keys = registro.keys()
             for i in keys:
-                elemento.datos[i] = registro[i]
-            self.vector[indice][indiceInterno] = elemento
-            return 0
-        else:
-            if not (type(primaria) is str):
-                return 1
-            indice = self.funcionHash(primaria)
-            if self.vector[indice] is None:
-                return 4
-            if not self.ExisteToAscii(self.vector[indice], primaria):
-                return 4
-            elemento = self.BuscandoNodoToAscii(self.vector[indice], primaria)
-            indiceInterno = self.vector[indice].index(elemento)
-            for i in keys:
-                elemento.datos[i] = registro[i]
-            self.vector[indice][indiceInterno] = elemento
-            return 0
+                if i >= self.columnas:
+                    return 1
+
+            if self.tipoPrimaria == 'int':
+                if not (type(primaria) is int):
+                    return 1
+                indice = self.funcionHash(primaria)
+                if self.vector[indice] is None:
+                    return 4
+                if not self.Existe(self.vector[indice], primaria):
+                    return 4
+                elemento = self.BusquedaBinariaDevlviendoNodo(self.vector[indice], primaria)
+                indiceInterno = self.vector[indice].index(elemento)
+                for i in keys:
+                    elemento.datos[i] = registro[i]
+                self.vector[indice][indiceInterno] = elemento
+                return 0
+            else:
+
+                indice = self.funcionHash(primaria)
+                if self.vector[indice] is None:
+                    return 4
+                if not self.ExisteToAscii(self.vector[indice], primaria):
+                    return 4
+                elemento = self.BuscandoNodoToAscii(self.vector[indice], primaria)
+                indiceInterno = self.vector[indice].index(elemento)
+                for i in keys:
+                    elemento.datos[i] = registro[i]
+                self.vector[indice][indiceInterno] = elemento
+                return 0
+        except:
+            return 1
 
     def extractTable(self):
         lista = []
@@ -491,6 +495,7 @@ class Tabla(object):
             if self.PK is None:
                 return 4
             self.PK = None
+            self.tipoPrimaria = None
             return 0
         except:
             return 1
@@ -542,16 +547,9 @@ class Tabla(object):
             contador += 1
         return combinada
 
-    def extractRangeTable(self, lower, upper):
+    def extractRangeTable(self, numeroColumna, lower, upper):
         try:
-            if len(lower) > 1:
-                lower = self.UnirLlave(lower)
-                upper = self.UnirLlave(upper)
-            else:
-                lower = lower[0]
-                upper = upper[0]
-
-            if self.tipoPrimaria == 'str':
+            if (not (type(lower) is int)) or (not (type(upper) is int)):
                 lower = str(lower)
                 upper = str(upper)
 
@@ -564,15 +562,15 @@ class Tabla(object):
                         lista.append(j)
 
             listaRetorno = []
-            if self.tipoPrimaria == 'int':
+            if not (type(lower) is int):
                 for nodo in lista:
-                    if lower <= nodo.primaria <= upper:
+                    if lower <= str(nodo.datos[numeroColumna]) <= upper:
                         listaRetorno.append(nodo.datos)
-            else:
-                for nodo in lista:
-                    if self.toASCII(lower) <= self.toASCII(nodo.primaria) <= self.toASCII(upper):
-                        listaRetorno.append(nodo.datos)
+                return listaRetorno
 
+            for nodo in lista:
+                if lower <= nodo.datos[numeroColumna] <= upper:
+                    listaRetorno.append(nodo.datos)
             return listaRetorno
         except:
             return []
@@ -613,7 +611,7 @@ print()
 
 print(tabla2.extractTable())
 print('Rango de tabla')
-print(tabla2.extractRangeTable(['aa'], ['aab']))
+print(tabla2.extractRangeTable(2, 8, 15))
 
 tabla2.imprimir()
 print('Probando add column')
@@ -685,7 +683,9 @@ tabla.insertar([53342, 'repetido'])
 tabla.insertar([3, 'Welmann2'])
 
 print('Extrayendo parte de la tabla')
-print(tabla.extractRangeTable([10], [18]))
+print(tabla.extractRangeTable(0, 8, 13))
+print('Extrayendo parte string')
+print(tabla.extractRangeTable(1, 'Welmann1', 'Welmann9'))
 
 print('Tabla entera:')
 
@@ -700,8 +700,7 @@ print('Quitando PK')
 print(tabla.alterDropPK())
 print('Volviendo a poner PK')
 print(tabla.alterAddPK([0, 1]))
-print('Range table compuesta')
-print(tabla.extractRangeTable([8, 'Welmann7'], [120, 'Welmann91']))
+
 tabla.imprimir()
 # tabla.Grafico()
 tabla.alterAddColumn('Agregada3')
@@ -735,7 +734,46 @@ print('Extraer tupla normal')
 print(tabla.ExtraerTupla([1346]))
 tabla.imprimir()
 
-
+tablaFloat = Tabla('Float', 4)
+print(tablaFloat.alterAddPK([0]))
+print(tablaFloat.insertar([1.4, 5, 8, 48]))
+print(tablaFloat.insertar([1.8, 10, 8, 478]))
+print(tablaFloat.insertar([1.9, 58, 8, 56]))
+print(tablaFloat.insertar([1.45, 58, 8, 256]))
+print(tablaFloat.insertar([10.5, 74, 8, 47]))
+print(tablaFloat.insertar([1, 78, 89, 789]))
+print(tablaFloat.insertar([489.45, 45, 8, 25]))
+print(tablaFloat.insertar([48.14, 795, 8, 48789]))
+print(tablaFloat.insertar([1.4, 52, 8, 741]))
+print(tablaFloat.insertar([1.48, 45, 8, 4789]))
+print('Rango de 1.4 a 1.9')
+print(tablaFloat.extractRangeTable(0, 1.4, 1.9))
+print('Update de tabla float')
+print(tablaFloat.update([1.4], {1:'modificado', 2:'Siu'}))
+print('Extract Row')
+print(tablaFloat.ExtraerTupla([1.4]))
+print('Delete de tabla float')
+print(tablaFloat.deleteTable([1.48]))
+print('Extract Row')
+print(tablaFloat.ExtraerTupla([1.48]))
+print('Retirando primaria')
+print(tablaFloat.alterDropPK())
+print('Haciendo cosas sin la primaria')
+print('Insertar')
+print(tablaFloat.insertar([1,1,1,1]))
+tablaFloat.imprimir()
+print('Extraer')
+print(tablaFloat.ExtraerTupla([1.4]))
+print('Eliminar')
+print(tablaFloat.deleteTable([1.4]))
+print('Extraer')
+print(tablaFloat.ExtraerTupla([1.4]))
+tablaFloat.imprimir()
+print('Colocando primaria falla')
+print(tablaFloat.alterAddPK([1, 2]))
+print('Colocando primaria exitosa')
+print(tablaFloat.alterAddPK([2, 3]))
+tablaFloat.imprimir()
 '''
 print()
 print()
