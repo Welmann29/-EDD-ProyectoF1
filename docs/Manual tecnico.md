@@ -46,9 +46,9 @@ cuerpo
 cuerpo
 
 ## Estructura de tablas
-## Paradigma utilizado
+### Paradigma utilizado
  Se aprovecho el paradigma orientado a objetos para la elaboración de las tablas, siendo cada una de ellas un objeto, que a su vez es una estructura (Tabla Hash), y esta estructura contiene objetos Nodo, los cuales contienen atributos especiales, de llave primaria y la contención de los datos, siendo básicamente cada nodo la tupla o registro de la tabla.
-## Estructura utilizada
+### Estructura utilizada
  La estructura utilizada para el almacenamiento de las tuplas es una tabla Hash abierta de direccionamiento cerrado, con los siguientes atributos:
   -	 Su tamaño inicial es 13
 -	Con un máximo de 90% y un mínimo de 30%
@@ -72,7 +72,7 @@ Se sacrifica tiempo en la inserción, pues esta aplica ordenamientos y mas compr
 ```sh
 Nota: Esta optimización solo se logro para llaves primarias enteras, las llaves primarias string causan confusión, en caso de tener llaves string el orden si podría llegar al ser lineal 
 ```
-## Clases y sus atributos
+### Clases y sus atributos
 Para el correcto funcionamiento de las tablas se hizo uso de dos clases, Tabla y Nodo, cada tabla en la libreria es una instancia de Tabla y cada registro o tupla es una instancia de la clase Nodo, esto se puede observar de mejor manera en el [diagrama de clases](#diagrama-de-clases)
 
 #### Nodo
