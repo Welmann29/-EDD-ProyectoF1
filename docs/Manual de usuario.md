@@ -15,11 +15,54 @@ HashMode es una librería escrita en Python 3 que provee almacenamiento para un 
 
 ## Glosario
 
-cuerpo
+| TERMINO   | DESCRIPCCION   |
+| ----- | ----- |
+| Archivo CSV | Los archivos CSV son un tipo de documento en formato abierto sencillo para representar datos en forma de tabla, en las que las columnas se separan por comas y las filas por saltos de línea. |
+| Base de datos | Una base de datos es un conjunto de datos pertenecientes a un mismo contexto y almacenados sistemáticamente para su posterior uso. Es capaz de almacenar gran cantidad de datos, relacionados y estructurados, que pueden ser consultados rápidamente de acuerdo con las características selectivas que se deseen. |
+| Eficiencia | Proporcionar un desempeño apropiado, en relación con la cantidad de recurso utilizado, bajo condiciones establecidas en determinado momento del tiempo. |
+| Interfaz | La interfaz es el medio donde el usuario puede comunicarse con una maquina, equipo o dispositivo, y comprender los puntos de contacto entre el usuario y el equipo.  |
+| Llave Foranea | Una llave foránea o llave ajena es una limitación referencial entre dos tablas e identifica una columna o grupo de columnas en una tabla que se refiere a una columna o grupo de columnas en otra tabla. |
+| Llave Primaria | Una llave primaria es un campo o una combinacion de campos que identifica de forma unica a cada fila de una tabla |
+| Parametro | Un parámetro, generalmente, es cualquier característica que pueda ayudar a definir o clasificar un sistema particular. |
+| Python | Python es un lenguaje de programación interpretado cuya filosofía hace hincapié en la legibilidad de su código. Se trata de un lenguaje de programación multiparadigma, ya que soporta orientación a objetos, programación imperativa y, en menor medida, programación funcional. |
+| Registro | Un registro representa un objeto único de datos implícitamente estructurados en una tabla. |
+| Tabla Hash | Una tabla hash es una estructura asosiada a llaves o claves con valores. La operación principal que soporta de manera eficiente es la búsqueda: permite el acceso a los elementos almacenados a partir de una clave generada. |
+| Tupla | Una tupla es una lista ordenada finata de elementos (componentes).|
 
 ## FAQ
 
-cuerpo
+1. ¿Cuantos datos se pueden ingresar en las tablas?
+```sh
+Repuesta: Se pueden ingresar n datos dependiendo de la cantidad de columnas que posea la tabla.
+``` 
+2. ¿Al eliminar una base de datos, los datos registrados se pierden?
+```sh
+Repuesta: Al eliminar la base de datos todo su contenido interno se eliminara automaticamente.
+``` 
+3. ¿Cuál es la diferencia entre delete row y truncate?
+```sh
+Repuesta: .El delete row sirve para eliminar la tupla seleccionada y el truncate sirve para eliminar todos los registros que posee la tabla.
+``` 
+4. ¿Qué tipos de registros se pueden ingresar en las tablas?
+```sh
+Repuesta: Se pueden ingresar cadenas de texto y numeros enteros.
+``` 
+5. ¿Que fallas se pueden encontrar al cargar un archivo CSV?
+```sh
+Repuesta: El mal ingreso los datos, la estructura inadecuada, la cantidad de datos en una tupla no corresponda a una tabla con un numero definido de columnas.
+``` 
+6. ¿Que representa la imagen de la estructura donde se almacenan los registros?
+```sh
+Repuesta: .Respresenta el ordenamiento de datos mediante indices y al ser una estructura Hash con direccionamiento cerrado proporcina una mayor fluidez y organizacion al momento de insertar datos.
+``` 
+7. ¿Que pasa si al agregar una base de datos, tabla o tupla no me aparesca en su listado correspondiente?
+```sh
+Repuesta: Si en dado caso llega a suceder solo debe refresar la pagina con el boton de actualizar
+``` 
+8. ¿Al finalizar el programa mis archivos se perderan?
+```sh
+Repuesta: El programa almacenara en archivos binarios todos los registros que se hayan proporcinado.
+```
 
 ## Uso de la librería
 
@@ -47,7 +90,59 @@ setDir("new_path")
 
 ## Uso del reportador gráfico
 
-cuerpo
+#### Ventana Base de Datos
+Ventana donde se podran visualizar todas las gestiones sobre bases de datos.
+1. Create a New Database: Se mostrara una ventana emergente que solicitara el nombre de la base de datos. El sistema no permitira dejar el campo en blanco o escribir el nombre de una base de datos ya exsiten. 
+2. Upload databases: Se mostrara una ventana emergente que solicitara la direccion url de un archivo (csv).
+3. Lista de Bases de Datos: Seccion donde se mostraran todas las bases de datos registradas o cargadas.
+4. Gestiones de la base de datos: Al seleccioanr una base de datos desplegada en la lista se desplegara una caja de detalles y opciones sobre la propia base de datos.
+5. Show Tables: Redirije a una nueva ventana donde se gestionaran todas la tablas que puede poseer la base de datos.
+6. Rename Database: Permite cambiarle el nombre a una base de datos ya existenete. Se verificara que el nuevo nombre no sea un nombre ya existente.
+7. Drop Database: Permite eliminar la base de datos seleccionada.
+8. Grafico de Bases de datos: Seccion donde se muestra una imagen de las bases de datos ya registradas.
+9. Update: Boton que actualiza la pagina.
+
+![Window_Databases](../img/Window_Databases.png "Ventana Base de Datos")
+
+#### Ventana Tablas 
+Ventana donde se podran visualizar todas las gestiones sobre tablas.
+1. Create a new table: Se mostrara una ventana emergente donde se solicitara el nombre y las columnas que llevara la tabla. Se solicitara que el nombre de la tabla ingresado no sea de una ya existente.
+2. Update: Boton que actualiza la pagina.
+3. Lista de tablas: Seccion donde se mostraran todas las tablas registradas o cargadas que almacena la base de datos.
+4. Show tuples: Redirije a una nueva ventana donde se gestionaran todos los registros que puede poseer la tabla.
+5. Gestiones de la tabla: Al seleccioanr una tabla desplegada en la lista se desplegara una caja de detalles y opciones sobre la propia tabla.
+6. Alter column: Agrega una columna a la tabla.
+7. Alter add PK: Define las llaves primarias que llevara la tabla solicitndo las columnas donde desee definirlas.
+8. Alter add index: (Fase 2)
+9. Extract range table: Solicita dos datos a ingresar (lower and upper) y luego la columna donde se desea posicionar los datos.
+10. Rename table: Permite renombrar la tabla solicitando un nombre que no sea de una ya existente.
+11. Extract table: Despliga una ventana emergente con todos los datos que posee la tabla.
+12. Alter add FK: (Fase 2)
+13. Alter drop PK: Elimina la llave primaria de la tabla seleccionada
+14. Drop column: Solicita el numero de columna para ser eliminada.
+15. Drop table: Elimina la tabla seleccionada.
+16. Grafico de tablas: Seccion donde se muestra una imagen de las tablas ya registradas de una base de datos.
+
+![Window_Tables](../img/Window_Tables.png "Ventana de Tablas")
+
+#### Ventana Registros
+Ventana donde se podran visualizar todas las gestiones sobre los registros de las tablas.
+1. Insert a new tuple: Se mostrara una ventana emergente donde se solicitara ingresar los datos separados por comas para identificar que el numero de datos corresponda al numero de columnas que posee la tabla.
+```sh
+Ejemplo: dato1, dato2, dato3, dato4
+```
+2. Update: Boton que actualiza la pagina.
+3. Lista de tuplas: Seccion donde se mostraran todas las tuplas registradas en la tabla mostrando la llave primaria de referencia.
+4. Extract row: Despliega una ventana emergente donde se muestran los datos de la tupla seleccionada
+5. Truncate: Elimina todos los registros de la tabla.
+6. Update row: Solicitara los datos primeramente del nuemero de columna seguido del dato a cambio y estos separados por una coma y para ingresar mas de un dato seprar estos por un ponto y coma.
+```sh
+Ejemplo: 0 , dato1 ; 1 , dato2 ; 2 , dato3 ; 3 , dato 4
+```
+7. Delete: Elimina la tupla seleccioanda.
+8. Grafico de tuplas: Seccion donde se muestra una imagen de la estructura Hash donde se akmacenan todos los registros de la tabla.
+
+![Window_Tuples](../img/Window_Tuples.png "Ventana de Registros")
 
 ## Uso de funciones de bases de datos
 
