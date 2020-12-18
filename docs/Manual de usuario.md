@@ -31,38 +31,38 @@ HashMode es una librería escrita en Python 3 que provee almacenamiento para un 
 
 ## FAQ
 
-1. ¿Cuantos datos se pueden ingresar en las tablas?
-```sh
-Repuesta: Se pueden ingresar n datos dependiendo de la cantidad de columnas que posea la tabla.
-``` 
+1. ¿Cuántos datos se pueden ingresar en las tablas?
+
+> **Respuesta:** Se pueden ingresar *n* datos, dependiendo de la cantidad de columnas que posea la tabla.
+
 2. ¿Al eliminar una base de datos, los datos registrados se pierden?
-```sh
-Repuesta: Al eliminar la base de datos todo su contenido interno se eliminara automaticamente.
-``` 
+
+> **Respuesta:** Al eliminar la base de datos todo su contenido interno se eliminará automaticamente.
+
 3. ¿Cuál es la diferencia entre delete row y truncate?
-```sh
-Repuesta: .El delete row sirve para eliminar la tupla seleccionada y el truncate sirve para eliminar todos los registros que posee la tabla.
-``` 
+
+> **Respuesta:** El delete row sirve para eliminar la tupla seleccionada y el truncate sirve para eliminar todos los registros que posee la tabla.
+
 4. ¿Qué tipos de registros se pueden ingresar en las tablas?
-```sh
-Repuesta: Se pueden ingresar cadenas de texto y numeros enteros.
-``` 
-5. ¿Que fallas se pueden encontrar al cargar un archivo CSV?
-```sh
-Repuesta: El mal ingreso los datos, la estructura inadecuada, la cantidad de datos en una tupla no corresponda a una tabla con un numero definido de columnas.
-``` 
-6. ¿Que representa la imagen de la estructura donde se almacenan los registros?
-```sh
-Repuesta: .Respresenta el ordenamiento de datos mediante indices y al ser una estructura Hash con direccionamiento cerrado proporcina una mayor fluidez y organizacion al momento de insertar datos.
-``` 
-7. ¿Que pasa si al agregar una base de datos, tabla o tupla no me aparesca en su listado correspondiente?
-```sh
-Repuesta: Si en dado caso llega a suceder solo debe refresar la pagina con el boton de actualizar
-``` 
+
+> **Respuesta:** Se pueden ingresar cadenas de texto y datos numéricos.
+
+5. ¿Qué fallas se pueden encontrar al cargar un archivo CSV?
+
+> **Respuesta:** El mal ingreso los datos, la estructura inadecuada, la cantidad de datos en una tupla no corresponda a una tabla con un número definido de columnas.
+
+6. En el reportador gráfico ¿Qué representa la imagen de la estructura donde se almacenan los registros?
+
+> **Respuesta:** Respresenta el ordenamiento de datos mediante indices, correspondiente de una tabla Hash abierta de direccionamiento cerrado.
+
+7. ¿Qué pasa si al agregar una base de datos, una tabla, o una tupla, esta no me aparece en el listado correspondiente?
+
+> **Respuesta:** Si en dado caso llega a suceder solo debe refresar la pagina con el boton de actualizar.
+
 8. ¿Al finalizar el programa mis archivos se perderan?
-```sh
-Repuesta: El programa almacenara en archivos binarios todos los registros que se hayan proporcinado.
-```
+
+> **Respuesta:** El programa almacenará dentro de la carpeta *data* todos sus datos.
+
 
 ## Uso de la librería
 
@@ -89,6 +89,8 @@ setDir("new_path")
 ```
 
 ## Uso del reportador gráfico
+
+Las siguientes son las funciones del reportador gráfico, que es capaz de manipular bases de datos, tablas y registros mediante una interfaz.
 
 #### Ventana Base de Datos
 Ventana donde se podran visualizar todas las gestiones sobre bases de datos.
