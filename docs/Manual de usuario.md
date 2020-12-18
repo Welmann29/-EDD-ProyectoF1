@@ -102,7 +102,7 @@ Ventana donde se podran visualizar todas las gestiones sobre bases de datos.
 8. Grafico de Bases de datos: Seccion donde se muestra una imagen de las bases de datos ya registradas.
 9. Update: Boton que actualiza la pagina.
 
-![Window_Databases](../img/Window_Databases.png "Ventana Base de Datos")
+![Window_Databases](img/Window_Databases.png "Ventana Base de Datos")
 
 #### Ventana Tablas 
 Ventana donde se podran visualizar todas las gestiones sobre tablas.
@@ -123,7 +123,7 @@ Ventana donde se podran visualizar todas las gestiones sobre tablas.
 15. Drop table: Elimina la tabla seleccionada.
 16. Grafico de tablas: Seccion donde se muestra una imagen de las tablas ya registradas de una base de datos.
 
-![Window_Tables](../img/Window_Tables.png "Ventana de Tablas")
+![Window_Tables](img/Window_Tables.png "Ventana de Tablas")
 
 #### Ventana Registros
 Ventana donde se podran visualizar todas las gestiones sobre los registros de las tablas.
@@ -142,7 +142,7 @@ Ejemplo: 0 , dato1 ; 1 , dato2 ; 2 , dato3 ; 3 , dato 4
 7. Delete: Elimina la tupla seleccioanda.
 8. Grafico de tuplas: Seccion donde se muestra una imagen de la estructura Hash donde se akmacenan todos los registros de la tabla.
 
-![Window_Tuples](../img/Window_Tuples.png "Ventana de Registros")
+![Window_Tuples](img/Window_Tuples.png "Ventana de Registros")
 
 ## Uso de funciones de bases de datos
 
