@@ -60,8 +60,8 @@ cuerpo
 
 ## Diagrama de clases
 
-![diagrama-clases](../img/diagrama-clases.png "Diagrama de clases")
+![diagrama-clases](img/diagrama-clases.png "Diagrama de clases")
 
-## Diagrama de gantt
+## Diagrama de Gantt
 
 cuerpo

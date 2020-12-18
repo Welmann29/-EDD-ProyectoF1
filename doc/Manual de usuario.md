@@ -69,7 +69,7 @@ Despliega las bases de datos almacenadas en *data/hash*.
 
 | Valor de retorno | Definición |
 | ------ | ------ |
-| <lista de bases de datos> | Operación exitosa |
+| <lista> | Operación exitosa |
 | <lista vacía> | No hay bases de datos almacenadas |
   
 ### alterDatabase(databaseOld, databaseNew)
@@ -106,14 +106,14 @@ Crea una tabla en la base de datos especificada. Recibe tres parámetros, los cu
 | 0 | Operación exitosa |
 | 1 | Error en la operación |
 | 2 | Base de datos inexistente |
-| 2 | Tabla existente |
+| 3 | Tabla existente |
 
 ### showTables(database)
 Recopila las tablas que contiene la base de datos consultada y devuelve los nombre de las tablas en una lista.
 
 | Valor de retorno | Definición |
 | ------ | ------ |
-| <Lista de tablas> | Operación exitosa |
+| <Lista> | Operación exitosa |
 | <Lista vacía> | La base de datos no contiene tablas |
 | None | Base de datos inexistente |
 
@@ -122,7 +122,7 @@ Extrae los registros que contiene una tabla. Recibe dos parámetros: la base de 
 
 | Valor de retorno | Definición |
 | ------ | ------ |
-| <Lista de registros> | Operación exitosa |
+| <Lista> | Operación exitosa |
 | <Lista vacía> | La tabla no contiene registros |
 | None | Error en la operación |
 
@@ -131,7 +131,7 @@ Extrae los registros correspondientes a un rango solicitado, para devolverlos en
 
 | Valor de retorno | Definición |
 | ------ | ------ |
-| <Lista de registros> | Operación exitosa |
+| <Lista> | Operación exitosa |
 | <Lista vacía> | La tabla no contiene registros |
 | None | Error en la operación |
 
@@ -268,9 +268,7 @@ La función puede retornar los siguientes valores una vez.
 
 | Valor de retorno | Definición |
 | ------ | ------ |
-| 1 | Error en la operación |
-| 2 | Base de datos inexistente |
-| 3 | Tabla inexistente |
+| <Lista vacía> | Error en la operación / Base de datos inexistente / Tabla inexistente |
 
 O también puede retornar los siguientes valores tantas veces como registros hayan en el archivo *csv*.
 

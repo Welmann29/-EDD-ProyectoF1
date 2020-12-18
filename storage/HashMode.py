@@ -3,27 +3,36 @@
 # Copyright (c) 2020 TytusDb Team
 
 
-from storage import ListaBaseDatos as Storage, serealizar
+from storage import ListaBaseDatos, serealizar
 import os, re, csv
 
-storage = Storage.ListaBaseDatos()
-main_path = os.getcwd()+"\\data\\hash"
-db_name_pattern = "^[a-zA-Z][a-zA-Z0-9#@$_]*"
+_storage = ListaBaseDatos.ListaBaseDatos()
+_main_path = os.getcwd()+"\\data\\hash"
+_db_name_pattern = "^[a-zA-Z][a-zA-Z0-9#@$_]*"
 
 
-def setDir(newPath: str) -> int:
+def setDir(path: str) -> int:
+    """Sets new data location
 
-    global main_path
-    temp_path = newPath+"\\data"
+        Parameters:\n
+            path (str): new data path
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+    """
+
+    global _main_path
+    temp_path = path+"\\data"
 
     try:
-        if os.path.isdir(newPath):
+        if os.path.isdir(path):
 
             if not os.path.isdir(temp_path):
                 os.mkdir(temp_path)
 
-            main_path = temp_path
-            Storage.main_path = temp_path
+            _main_path = temp_path
+            ListaBaseDatos.main_path = temp_path
 
             __init__()
 
@@ -46,8 +55,8 @@ def __init__():
     if not os.path.isdir(os.getcwd()+"\\data\\hash"):
         os.mkdir(os.getcwd()+"\\data\\hash")
         
-    for db in os.listdir(main_path):
-        storage.createDatabase(db)
+    for db in os.listdir(_main_path):
+        _storage.createDatabase(db)
         
 __init__()
 
@@ -55,11 +64,21 @@ __init__()
 # Se llama la función sobre la clase ListaBaseDatos
 
 def createDatabase(database: str) -> int:
+    """Creates a database
+
+        Parameters:\n
+            database (str): name of the database
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: database name occupied
+    """
 
     try:
         
-        if re.search(db_name_pattern, database):
-            return storage.createDatabase(database)
+        if re.search(_db_name_pattern, database):
+            return _storage.createDatabase(database)
 
         else:
             return 1
@@ -69,30 +88,70 @@ def createDatabase(database: str) -> int:
 
 
 def showDatabases() -> list:
+    """Show stored databases
 
-    return storage.showDatabases()
+        Returns:\n
+            list: successful operation
+    """
+
+    return _storage.showDatabases()
 
 
 def alterDatabase(databaseOld: str, databaseNew: str) -> int:
+    """Renames a database
 
-    if re.search(db_name_pattern, databaseOld) and re.search(db_name_pattern, databaseNew):
-        return storage.alterDatabase(databaseOld, databaseNew)
+        Parameters:\n
+            databaseOld (str): name of the target database
+            databaseNew (str): new name of the target database
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent target database
+            3: new database name occupied
+    """
+
+    if re.search(_db_name_pattern, databaseOld) and re.search(_db_name_pattern, databaseNew):
+        return _storage.alterDatabase(databaseOld, databaseNew)
 
     else:
         return 1
 
 
 def dropDatabase(database: str) -> int:
+    """Deletes a database (including all of its content)
 
-    return storage.dropDatabase(database)
+        Parameters:\n
+            database (str): name of the database
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+    """
+
+    return _storage.dropDatabase(database)
 
 
 # ==//== funciones con respecto a BaseDatos ==//==
 # Primero se busca la base de datos y luego se llama la función sobre la clase BaseDatos
 
 def createTable(database: str, table: str, numberColumns: int) -> int:
+    """Creates a table
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            numberColumns (int): number of table columns
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: table name ocuppied
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.createTable(table, numberColumns)
@@ -102,8 +161,17 @@ def createTable(database: str, table: str, numberColumns: int) -> int:
 
 
 def showTables(database: str) -> list:
+    """Show stored tables in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+
+        Returns:\n
+            list: successful operation
+            None: non-existent database
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.showTables()
@@ -113,8 +181,18 @@ def showTables(database: str) -> list:
 
 
 def extractTable(database: str, table: str) -> list:
+    """Shows the content of a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+
+        Returns:\n
+            list: successful operation
+            None: non-existent database, non-existent table, an error ocurred
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.extractTable(table)
@@ -124,8 +202,21 @@ def extractTable(database: str, table: str) -> list:
 
 
 def extractRangeTable(database: str, table: str, columnNumber: int, lower: any, upper: any) -> list:
+    """Shows the content whitin a range of a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            columnNumber (int): PK to compare
+            lower (any): lower limit of PK value
+            upper (any): upper limit of PK value
+
+        Returns:\n
+            list: successful operation
+            None: non-existent database, non-existent table, an error ocurred
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.extractRangeTable(table, columnNumber, lower, upper)
@@ -135,8 +226,23 @@ def extractRangeTable(database: str, table: str, columnNumber: int, lower: any, 
 
 
 def alterAddPK(database: str, table: str, columns: list) -> int:
+    """Adds a PK to a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            columns (list): list with PK columns
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+            4: existent PK
+            5: PK out of bounds
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.alterAddPK(table, columns)
@@ -146,8 +252,21 @@ def alterAddPK(database: str, table: str, columns: list) -> int:
 
 
 def alterDropPK(database: str, table: str) -> int:
+    """Deletes PKs of a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+            4: non-existent PK
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.alterDropPK(table)
@@ -157,18 +276,38 @@ def alterDropPK(database: str, table: str) -> int:
 
 
 def alterAddFK(database: str, table: str, references: dict) -> int:
+    """
+    DOCSTRING
+    """
 
     print("codigo en proceso (FASE 2)")
 
 
 def alterAddIndex(database: str, table: str, references: dict) -> int:
+    """
+    DOCSTRING
+    """
 
     print("codigo en proceso (FASE 2)")
 
 
 def alterTable(database: str, tableOld: str, tableNew: str) -> int:
+    """Renames a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            tableOld (str): name of the target table
+            tableNew (str): new name of the table
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent target table
+            4: new table name occupied
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.alterTable(tableOld, tableNew)
@@ -178,8 +317,21 @@ def alterTable(database: str, tableOld: str, tableNew: str) -> int:
 
 
 def alterAddColumn(database:str, table:str, default: any) -> int:
+    """Appends a column to a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            default (any): default value of registers new column
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.alterAddColumn(table, default)
@@ -189,8 +341,23 @@ def alterAddColumn(database:str, table:str, default: any) -> int:
 
 
 def alterDropColumn(database: str, table: str, columnNumber: int) -> int:
+    """Deletes a column of a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            columnNumber (int): target column index
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+            4: column cannot be deleted
+            5: column index out of bounds
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.alterDropColumn(table, columnNumber)
@@ -200,8 +367,20 @@ def alterDropColumn(database: str, table: str, columnNumber: int) -> int:
 
 
 def dropTable(database: str, table: str) -> int:
+    """Deletes a table in a database (including all of its content)
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
         return temp.dropTable(table)
@@ -214,8 +393,23 @@ def dropTable(database: str, table: str) -> int:
 # Primero se busca la base de datos, luego la tabla, y luego se llama la función sobre la clase Tabla
 
 def insert(database: str, table: str, register: list) -> int:
+    """Inserts a register into a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            register (list): list with register values
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+            4: PK ocuppied
+            5: register out of bounds
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
 
@@ -235,6 +429,18 @@ def insert(database: str, table: str, register: list) -> int:
 
 
 def loadCSV(file: str, database: str, table: str) -> list:
+    """Loads a csv file and inserts its content into a table in a database
+
+        Parameters:\n
+            file (str): csv file path
+            file (str): csv file path
+            database (str): name of the database
+            table (str): name of the table
+
+        Returns:\n
+            list: return values of each insert
+            empty list: non-existent database, non-existent table, an error occured, csv file is empty
+    """
 
     try:
         archivo = open(file, "r")
@@ -242,7 +448,7 @@ def loadCSV(file: str, database: str, table: str) -> list:
     except:
         return []
 
-    temp = storage.Buscar(database)
+    temp = _storage.Buscar(database)
 
     if temp:
         
@@ -253,7 +459,7 @@ def loadCSV(file: str, database: str, table: str) -> list:
             
             if b[0]:
                 
-                tabla = serealizar.rollback(nombre, main_path+"\\"+database)
+                tabla = serealizar.rollback(nombre, _main_path+"\\"+database)
                 registros = csv.reader(archivo, delimiter = ",")
                 valores=[]                
 
@@ -261,7 +467,7 @@ def loadCSV(file: str, database: str, table: str) -> list:
                     valores.append(tabla.insertar(registro))
 
                 else:
-                    serealizar.commit(tabla, table, main_path+"\\"+database)
+                    serealizar.commit(tabla, table, _main_path+"\\"+database)
                     return valores
 
             else:
@@ -275,8 +481,19 @@ def loadCSV(file: str, database: str, table: str) -> list:
         
 
 def extractRow(database: str, table: str, columns: list) -> list:
+    """Shows a register of a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            columns (list): PK of target register
+
+        Returns:\n
+            list: succesful operation
+            empty list: non-existent database, non-existent table, an error ocurred
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
 
@@ -296,8 +513,23 @@ def extractRow(database: str, table: str, columns: list) -> list:
 
 
 def update(database: str, table: str, register: dict, columns: list) -> int:
+    """Updates a register into a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            register (dict): key: column number, value: new values
+            columns (list): PK of target register
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+            4: non-existent PK
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
 
@@ -317,8 +549,22 @@ def update(database: str, table: str, register: dict, columns: list) -> int:
 
 
 def delete(database: str, table: str, columns: list) -> int:
+    """Deletes a register into a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+            columns (list): PK of target register
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+            4: non-existent PK
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
 
@@ -338,8 +584,20 @@ def delete(database: str, table: str, columns: list) -> int:
 
 
 def truncate(database: str, table: str) -> int:
+    """Deletes the content of a table in a database
 
-    temp = storage.Buscar(database)
+        Parameters:\n
+            database (str): name of the database
+            table (str): name of the table
+
+        Returns:\n
+            0: successful operation
+            1: an error ocurred
+            2: non-existent database
+            3: non-existent table
+    """
+
+    temp = _storage.Buscar(database)
 
     if temp:
 
