@@ -36,27 +36,63 @@ No todo se maneja con tablas Hash, puesto que se considero que la parte con mas 
 
 Como estructura interna de un DBMS, además de la eficiencia y eficacia de las creaciones, inserciones y demás gestiones, otro punto importante es la persistencia de los datos, dicha persistencia se maneja con un sistema hibrido entre un sistema jerárquico de ficheros y la serialización de objetos que guardan la información de cada Tabla Hash, así cada vez que se insertan nuevos registros los cambios se guardan en memoria volviendo a serializar los objetos previamente creados, este proceso de recuperar y serializar los objetos puede ser significativo para la maquina y la eficiencia del proyecto, es por ello que se recurrió a algoritmos que hicieran menos recurrente este proceso y se aprovecharan también los recursos cargados en memoria en cierto instante de la ejecución de la librería, esto hace más eficaz las operaciones aunque exige un poco de persistencia en memoria de cierto objetos, siempre respetando limites para no sobrecargarla de información.
 
-
 ## Requerimentos funcionales
 
 cuerpo
 
+
+## Paradigma utilizado
+
+Todas las estructuras hace un uso amplio del paradigma orientado a objetos. Una instancia de la [estructura de bases de datos](#estructura-de-bases-de-datos) contiene varias [estructuras de tablas](#estructura-de-tablas), y estas a su vez contienen varias [estructuras de registros](#estructura-de-registros), siendo cada uno de los intermediarios un objeto, que a su vez es una estructura. La última estructura también contiene objetos Nodo, los cuales contienen atributos especiales, de llave primaria y la contención de los datos, siendo básicamente cada nodo la tupla o registro de la tabla. Lo anterior descrito puede ser observado en el [diagrama de clases](#diagrama-de-clases).
+
 ## Estructura de bases de datos
 
-cuerpo
+### Estructura utilizada
+
+Para el almacenamiento de las bases de datos se optó por usar una lista de Python que almacena estructuras Bases de Datos.
+
+#### ¿Por qué una lista de Python?
+
+Una lista de python fue elegida dada su naturaleza dinámica y eficaz, sin contar los métodos inherentes de la lista de Python. La estructura manejada no ordena las bases de datos, si no que gestiona los datos tal como una cola, es decir que la primera base de datos en entrar a la lista será la primera a la que se acceda (FIFO).
+
+![Lista de bases de datos](img/ListaBaseDatos.png "Lista de bases de datos")
+
+Existe una relación directa entre cada objeto BaseDatos que almacena la lista y el contenido de la carpeta *data/hash*, a una base de datos *database* en la lista de bases de datos le corresponde una carpeta *data/hash/**database***. 
+
+> **Nota:** Aunque las bases de datos se almacenen en disco mediante un modelo jerárquico, todas las bases de datos se mantienen en memoria para trabajar diréctamente sobre estas (más no las [Tablas](#Estructura-de-tablas)).
+
+### Clases y sus atributos
+La lista de bases de datos se trata de un atributo de la clase ListaBaseDatos, donde cada elemento de la lista se trata de un objeto de la clase BaseDatos, esto se puede observar de mejor manera en el [diagrama de clases](#diagrama-de-clases).
+
+#### Nodo
+
+Los nodos de la lista (BaseDatos) se explican de manera amplia en la sección [Estructura de tablas](#Estructura-de-tablas).
+
+#### Lista de bases de datos
+
+La librería hace uso de una instancia de la clase ListaBaseDatos, que no requiere argumentos. Los métodos de esta clase hacen uso de los métodos de las listas de Python, con las respectivas validaciones.
+
+Para crear una base de datos, se añade una instancia de la clase BaseDatos mediante el método *append()* de las listas, para eliminar una base de datos se hace uso del método *remove()* de las listas, y para modificar el nombre de una base de datos, se busca en la lista y se cambia su atributo *nombre*.
+
 
 ## Estructura de tablas
-### Paradigma utilizado
- Se aprovecho el paradigma orientado a objetos para la elaboración de las tablas, siendo cada una de ellas un objeto, que a su vez es una estructura (Tabla Hash), y esta estructura contiene objetos Nodo, los cuales contienen atributos especiales, de llave primaria y la contención de los datos, siendo básicamente cada nodo la tupla o registro de la tabla.
+
+
+
+
+
+## Estructura de registros
+ 
 ### Estructura utilizada
+
  La estructura utilizada para el almacenamiento de las tuplas es una tabla Hash abierta de direccionamiento cerrado, con los siguientes atributos:
-  -	 Su tamaño inicial es 13
+-	 Su tamaño inicial es 13
 -	Con un máximo de 90% y un mínimo de 30%
 -	La función hash implementada, método de división (k mod m)
 
 #### ¿Por qué una tabla hash abierta de direccionamiento cerrado?
-Se opto por este tipo de tabla hash para optimizar las búsquedas al momento de las colisiones, pues en una tabla hash cerrada de direccionamiento abierto las colisiones son mas frecuentes e incontrolables, pues estas se manejan aumentando el índice y nunca se puede llevar un control de donde realmente las va a colocar, puede llegar a un punto donde siempre colisione haciendo que los índices se corran y la búsqueda resultar lineal.
 
+Se opto por este tipo de tabla hash para optimizar las búsquedas al momento de las colisiones, pues en una tabla hash cerrada de direccionamiento abierto las colisiones son mas frecuentes e incontrolables, pues estas se manejan aumentando el índice y nunca se puede llevar un control de donde realmente las va a colocar, puede llegar a un punto donde siempre colisione haciendo que los índices se corran y la búsqueda resultar lineal.
 
 ![HashCerrado](img/HashCerrado.png "Ejemplo Hash Cerrado")
 
@@ -69,35 +105,35 @@ Aquí es donde se hizo la modificación para la optimización de búsquedas, se 
 El algoritmo es sencillo, en cada inserción se comprueba si la lista esta vacía, si lo esta el dato sencillamente se inserta, si no lo esta el dato se inserta y posteriormente la lista se manda a un método burbuja para ser ordenada.
 
 Se sacrifica tiempo en la inserción, pues esta aplica ordenamientos y mas comprobaciones, pero este tiempo se optimiza al momento de cualquier búsqueda, para eliminar, modificar o sencillamente consultar.
-```sh
-Nota: Esta optimización solo se logro para llaves primarias enteras, las llaves primarias string causan confusión, en caso de tener llaves string el orden si podría llegar al ser lineal 
-```
+
+>**Nota:** Esta optimización solo se logro para llaves primarias enteras, las llaves primarias string causan confusión, en caso de tener llaves string el orden si podría llegar al ser lineal 
+
 ### Clases y sus atributos
-Para el correcto funcionamiento de las tablas se hizo uso de dos clases, Tabla y Nodo, cada tabla en la libreria es una instancia de Tabla y cada registro o tupla es una instancia de la clase Nodo, esto se puede observar de mejor manera en el [diagrama de clases](#diagrama-de-clases)
+
+Para el correcto funcionamiento de las tablas se hizo uso de dos clases, Tabla y Nodo, cada tabla en la libreria es una instancia de Tabla y cada registro o tupla es una instancia de la clase Nodo, esto se puede observar de mejor manera en el [diagrama de clases](#diagrama-de-clases).
 
 #### Nodo
-Como se menciono anteriormente, una instancia de esta clase representa una tupla o registro de la tabla, para instanciar esta clase se requieren los siguientes argumentos:
+
+Como se mencionó anteriormente, una instancia de esta clase representa una tupla o registro de la tabla, para instanciar esta clase se requieren los siguientes argumentos:
 - Los datos a registrar
 - Una lista con las posiciones de la llave primaria
 - Un contador, en caso se maneje llave oculta
 
 Estos argumentos se pasan automaticamente en el metodo *insertar* de la clase Tabla, los datos son los datos que se quieren regsitrar, la lista es el atributo PK de la clase, y el contador es un autoincrementable que maneja la clase.
 
-Este objeto sirve como un contenedor, en este se contienen los datos del registro, y el mismo objeto al instanciarse verifica las pocisiones de la llave primaria (la lista que se le envia) y automaticamente la forma, en caso la Tabla no tenga llave primaria definida, el atributo PK sera *None*, y en dicho caso el objeto toma como llave primaria el contador que recibio.
-```sh
-Asi es como cada instancia de Nodo es un registro o tupla con su llave primaria definida.
-```
+Este objeto sirve como un contenedor, en este se contienen los datos del registro, y el mismo objeto al instanciarse verifica las posiciones de la llave primaria (la lista que se le envia) y automáticamente la forma, en caso la Tabla no tenga llave primaria definida, el atributo PK sera *None*, y en dicho caso el objeto toma como llave primaria el contador que recibió. 
+
+> **Nota:** Así es como cada instancia de Nodo es un registro o tupla con su llave primaria definida.
 
 #### Tabla
+
 Cada instancia de Tabla, es una tabla en la base de datos, la cual maneja el almacenamiento por medio de una Tabla Hash, para instanciar esta clase se requieren los siguientes argumentos:
 - Nombre, el nombre de la tabla, el cual sera unico en determinada Base de Datos
-- Columnas, es el numero de columnas que posee la tabla
+- Columnas, es el número de columnas que posee la tabla
 
-Con estos parametros se construye el objeto, el cual toma el nombre indicado y se atribuye el numero de columnas igualmente indicado, define su tamaño inicial como 13, la Pk y tipo de Pk, como *None* pues esto debe ser indicado posteriormente por otro metodo, y sus respectivos contadores de datos y factor de carga como 0.
+Con estos parámetros se construye el objeto, el cual toma el nombre indicado y se atribuye el numero de columnas igualmente indicado, define su tamaño inicial como 13, la Pk y tipo de Pk, como *None* pues esto debe ser indicado posteriormente por otro metodo, y sus respectivos contadores de datos y factor de carga como 0.
 
-```sh
-Una vez instanciado este objeto se puede decir que la base de datos tiene una tabla mas, en la cual se pueden realizar inserciones y demas operaciones.
-```
+> **Nota:** Una vez instanciado este objeto se puede decir que la base de datos tiene una tabla mas, en la cual se pueden realizar inserciones y demas operaciones.
 
 ## Reportador grafico
 
