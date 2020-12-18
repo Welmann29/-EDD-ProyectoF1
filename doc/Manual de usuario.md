@@ -217,7 +217,7 @@ Ingresa un nuevo registro en la tabla de la base de datos especificada. Recibe c
 | 2 | Base de datos inexistente |
 | 3 | Tabla existente |
 | 4 | Llave primaria duplicada |
-| 3 | Numero de columnas no coinciden |
+| 5 | Numero de columnas no coinciden |
 
 ### extractRow(database, table, primaryKey[list])
 Con esta funcion es posible extraer la informacion de una tupla especificando su llave primaria. Recibe como parametro el nombre de la base de datos, de la tabla y una lista con los valores que componen la llave primaria; si la llave primaria es simple, de igual manera se debe enviar en forma de lista; se sugiere que se envie todo dato entero en formato entero.
