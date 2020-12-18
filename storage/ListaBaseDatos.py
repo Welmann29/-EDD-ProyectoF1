@@ -73,6 +73,7 @@ class ListaBaseDatos:
 
                 try:
                     temp_old.Name = databaseNew
+                    temp_old.Name = databaseNew
 
                     temp_path_old = main_path+"\\"+databaseOld
                     temp_path_new = main_path+"\\"+databaseNew
@@ -136,9 +137,9 @@ class ListaBaseDatos:
         os.system('dbs.png')
 
 
-    def Devolver(self, database, table):
+    def Cargar(self, database, table):
 
         temp=self.Buscar(database)
 
         if temp:
-            return temp.Devolver(table)
+            return temp.Cargar(table)
