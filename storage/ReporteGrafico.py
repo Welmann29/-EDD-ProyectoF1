@@ -1014,8 +1014,37 @@ class Tables_Window:
         if low:
             lower = int(lower.get())
 
-        print(h.extractRangeTable(database, table, columns, lower, upper))
+        text= h.extractRangeTable(database, table, columns, lower, upper)
         temp.destroy()
+        self.show_row(text, table)
+
+
+    def show_row(self, text, table):
+        temp = Toplevel()
+        Label(self.new_frame(temp, 100, 30, 20, 10), text="TABLE: ", font=("Arial Black", 10)).pack()
+        Label(self.new_frame(temp, 100, 30, 100, 10), text=str(table), font=("Arial", 11)).pack()
+        Frame1 = LabelFrame(temp)
+        can = Canvas(Frame1, width=430, height=20)
+        Scrollbar_x = Scrollbar(Frame1, orient="vertical", command=can.yview)
+        Scrollbar_y = Scrollbar(Frame1, orient="horizontal", command=can.xview)
+        Scrollbar_y.pack(side="bottom", fill="x")
+        Scrollbar_x.pack(side="right", fill="y")
+        can.pack(expand=True, fill="both")
+        can.configure(yscrollcommand=Scrollbar_x.set, xscrollcommand=Scrollbar_y.set)
+        frame = Frame(can)
+        can.create_window((False, False), window=frame, anchor="nw")
+        can.bind("<Configure>", lambda e: can.configure(scrollregion=can.bbox("all")))
+        Frame1.place(x=20, y=50)
+
+        for z in text:
+            Label(frame, text=str(z), font=("Arial", 10)).pack()
+
+        x = (temp.winfo_screenwidth() // 2) - (temp.winfo_width() // 2) - 200
+        y = (temp.winfo_screenheight() // 2) - (temp.winfo_height() // 2) - 100
+        temp.geometry('{}x{}+{}+{}'.format(500, 140, x, y))
+        temp.resizable(0, 0)
+        temp.title("EXRACTRANGETABLE")
+
 
 
     '''  CASTEO DE DATOS INGRESADOS   '''
