@@ -25,11 +25,13 @@ class BaseDatos:
     def Buscar(self, table):
         existe = False
         i = -1
-        if table in self.list_table:
-            existe = True
-            i=self.list_table.index(table)
-        else:
-            existe = False
+        for tabla in self.list_table:
+            if tabla.casefold() == table.casefold():
+                existe = True
+                i=self.list_table.index(tabla)
+                break
+            else:
+                existe = False
             
         salida = [existe, i]
         return salida
@@ -58,7 +60,10 @@ class BaseDatos:
 
     # == CREAR TABLAS
     def createTable(self, tableName, numberColumns):
-        if not tableName in self.list_table:
+        salida = self.Buscar(tableName)
+        if salida[0]:
+            return 3
+        else:
             try:
                 if re.search(table_name_pattern, tableName):
                     self.list_table.append(tableName)
@@ -69,8 +74,6 @@ class BaseDatos:
                     return 1
             except:
                 return 1
-        else:
-            return 3
 
     # == MOSTRAR TABLAS
     def showTables(self):
@@ -78,7 +81,8 @@ class BaseDatos:
 
     # === EXTRAER INFORMACIÓN
     def extractTable(self, table):
-        if table in self.list_table:
+        salida = self.Buscar(table)
+        if salida[0]:
             try:
                 temp = serealizar.rollback(table, self.main_path)    
                 return temp.extractTable()
@@ -89,7 +93,8 @@ class BaseDatos:
     
     # === EXTRA Y DEVUELVE LISTA DE ELEMENTOS DE UN RANGO ESPECIFICO 
     def extractRangeTable(self, table, columnNumber, lower, upper):
-        if table in self.list_table:
+        salida = self.Buscar(table)
+        if salida[0]:
             try:
                 temp = serealizar.rollback(table, self.main_path)    
                 return temp.extractRangeTable(columnNumber, lower, upper)
@@ -100,7 +105,8 @@ class BaseDatos:
   
     # == LLAVES PRIMARIAS Y FORÁNEAS    
     def alterAddPK(self, table, columns):
-        if table in self.list_table:
+        salida = self.Buscar(table)
+        if salida[0]:
             try:
                 if len(columns) == 0:
                     return 1
@@ -115,7 +121,8 @@ class BaseDatos:
             return 3
 
     def alterDropPK(self, table):
-        if table in self.list_table:
+        salida = self.Buscar(table)
+        if salida[0]:
             try:
                 temp = self.Cargar(table)                    
                 var = temp.alterDropPK()
