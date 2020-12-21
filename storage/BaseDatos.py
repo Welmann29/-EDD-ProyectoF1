@@ -87,7 +87,7 @@ class BaseDatos:
                 temp = serealizar.rollback(table, self.main_path)    
                 return temp.extractTable()
             except:
-                return 1
+                return None
         else:
             return None
     
@@ -139,7 +139,8 @@ class BaseDatos:
         if salida[0]:
             try:
                 temp = serealizar.rollback(tableOld, self.main_path)
-                if not tableNew in self.list_table:                    
+                comprobar = self.Buscar(tableNew)
+                if comprobar[0] == False:                    
                     if re.search(table_name_pattern, tableOld) and re.search(table_name_pattern, tableNew):
                         os.remove(self.main_path+"\\"+tableOld+".bin")
                         self.list_table[salida[1]]= tableNew
@@ -215,5 +216,4 @@ class BaseDatos:
         file.write('tabla[shape=record label="'+info+'}"];')
         file.write(' }' + os.linesep)
         file.close()
-        os.system('dot -Tpng tablas.dot -o tablas.png')
         os.system('dot -Tpng tablas.dot -o tablas.png')
